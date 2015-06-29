@@ -18,6 +18,7 @@ include $(CLEAR_VARS)
 
 LOCAL_SRC_FILES := \
 	screenrecord.cpp \
+	com_mindarc_screenrecorder_core_ScreenRecorder.cpp
 
 #LOCAL_SHARED_LIBRARIES := \
 #	libstagefright libmedia libutils libbinder libstagefright_foundation \
