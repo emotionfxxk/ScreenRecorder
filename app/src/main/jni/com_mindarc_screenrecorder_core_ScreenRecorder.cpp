@@ -1,5 +1,6 @@
 #include "com_mindarc_screenrecorder_core_ScreenRecorder.h"
 #include "ScreenRecorder.h"
+#include <sys/types.h>
 
 #ifdef __cplusplus
 extern "C" {
@@ -11,7 +12,12 @@ extern "C" {
  */
 JNIEXPORT jboolean JNICALL Java_com_mindarc_screenrecorder_core_ScreenRecorder_init
   (JNIEnv *env, jclass clazz, jint width, jint height, jint bitrate, jint timeLimit, jboolean rotate, jstring destFile) {
-    return true;
+    const char* destFileName = env->GetStringUTFChars(destFile, NULL);
+    jboolean bRet = ScreenRecorder::getRecorder()->init(width, height, bitrate, timeLimit, rotate, destFileName);
+    if (destFileName != NULL) {
+      env->ReleaseStringUTFChars(destFile, destFileName);
+    }
+    return bRet;
 }
 
 /*

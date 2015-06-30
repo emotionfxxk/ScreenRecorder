@@ -64,7 +64,7 @@ static uint32_t sWidth = 0;
 static uint32_t sHeight = 0;
 static uint32_t sBitRate = 4000000;         // 4Mbps
 static uint32_t sTimeLimitSec = kMaxTimeLimitSec;
-static const char* sFileName = NULL;
+static char* sFileName = NULL;
 static bool sRotate = false;
 static bool sIsRecorderRunning = false;
 
@@ -100,7 +100,11 @@ bool ScreenRecorder::init(int width, int height, int bitrate, int timeLimit, boo
     sHeight = height;
     sBitRate = bitrate;
     sTimeLimitSec = timeLimit;
-    sFileName = destFilePath;
+    if(sFileName != NULL) {
+        free(sFileName);
+        sFileName = NULL;
+    }
+    sFileName = strdup(destFilePath);
     sRotate = rotate;
     ALOGV("init WxH:[%d:%d], bitrate:[%d], time limit:[%d], rotate:[%d], dest file name:[%s]",
         sWidth, sHeight, sBitRate, sTimeLimitSec, sRotate, sFileName);
@@ -116,6 +120,8 @@ bool ScreenRecorder::start() {
         ALOGW("Failed to start screen recorder, recorder is running now!");
         return false;
     }
+
+    ALOGV("ScreenRecorder::start(), try to recorder screen to %s", sFileName);
 
     pthread_t thread;
     pthread_attr_t attr;

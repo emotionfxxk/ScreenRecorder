@@ -14,6 +14,7 @@ public class MainActivity extends ActionBarActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        ScreenRecorder.init(1280, 720, 4000000, 15, false, "/sdcard/test1.mp4");
         ScreenRecorder.start();
     }
 
