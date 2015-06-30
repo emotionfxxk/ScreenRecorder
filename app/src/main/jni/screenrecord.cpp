@@ -15,7 +15,7 @@
  */
 
 #define LOG_TAG "ScreenRecord"
-//#define LOG_NDEBUG 0
+#define LOG_NDEBUG 0
 #include <utils/Log.h>
 
 #include <binder/IPCThreadState.h>
@@ -134,7 +134,7 @@ static status_t prepareEncoder(float displayFps, sp<MediaCodec>* pCodec,
     status_t err;
 
     if (gVerbose) {
-        printf("Configuring recorder for %dx%d video at %.2fMbps\n",
+        ALOGV("Configuring recorder for %dx%d video at %.2fMbps\n",
                 gVideoWidth, gVideoHeight, gBitRate / 1000000.0);
     }
 
@@ -153,7 +153,7 @@ static status_t prepareEncoder(float displayFps, sp<MediaCodec>* pCodec,
     ALOGV("Creating codec");
     sp<MediaCodec> codec = MediaCodec::CreateByType(looper, "video/avc", true);
     if (codec == NULL) {
-        fprintf(stderr, "ERROR: unable to create video/avc codec instance\n");
+        ALOGV("ERROR: unable to create video/avc codec instance\n");
         return UNKNOWN_ERROR;
     }
     err = codec->configure(format, NULL, NULL,
@@ -162,7 +162,7 @@ static status_t prepareEncoder(float displayFps, sp<MediaCodec>* pCodec,
         codec->release();
         codec.clear();
 
-        fprintf(stderr, "ERROR: unable to configure codec (err=%d)\n", err);
+        ALOGV("ERROR: unable to configure codec (err=%d)\n", err);
         return err;
     }
 
@@ -173,8 +173,7 @@ static status_t prepareEncoder(float displayFps, sp<MediaCodec>* pCodec,
         codec->release();
         codec.clear();
 
-        fprintf(stderr,
-            "ERROR: unable to create encoder input surface (err=%d)\n", err);
+        ALOGV("ERROR: unable to create encoder input surface (err=%d)\n", err);
         return err;
     }
 
@@ -184,7 +183,7 @@ static status_t prepareEncoder(float displayFps, sp<MediaCodec>* pCodec,
         codec->release();
         codec.clear();
 
-        fprintf(stderr, "ERROR: unable to start codec (err=%d)\n", err);
+        ALOGV("ERROR: unable to start codec (err=%d)\n", err);
         return err;
     }
 
@@ -258,10 +257,10 @@ static status_t prepareVirtualDisplay(const DisplayInfo& mainDpyInfo,
 
     if (gVerbose) {
         if (gRotate) {
-            printf("Rotated content area is %ux%u at offset x=%d y=%d\n",
+            ALOGV("Rotated content area is %ux%u at offset x=%d y=%d\n",
                     outHeight, outWidth, offY, offX);
         } else {
-            printf("Content area is %ux%u at offset x=%d y=%d\n",
+            ALOGV("Content area is %ux%u at offset x=%d y=%d\n",
                     outWidth, outHeight, offX, offY);
         }
     }
@@ -302,7 +301,7 @@ static status_t runEncoder(const sp<MediaCodec>& encoder,
     Vector<sp<ABuffer> > buffers;
     err = encoder->getOutputBuffers(&buffers);
     if (err != NO_ERROR) {
-        fprintf(stderr, "Unable to get output buffers (err=%d)\n", err);
+        ALOGV("Unable to get output buffers (err=%d)\n", err);
         return err;
     }
 
@@ -317,7 +316,7 @@ static status_t runEncoder(const sp<MediaCodec>& encoder,
 
         if (systemTime(CLOCK_MONOTONIC) > endWhenNsec) {
             if (gVerbose) {
-                printf("Time limit reached\n");
+                ALOGV("Time limit reached\n");
             }
             break;
         }
@@ -352,7 +351,7 @@ static status_t runEncoder(const sp<MediaCodec>& encoder,
                 err = muxer->writeSampleData(buffers[bufIndex], trackIdx,
                         ptsUsec, flags);
                 if (err != NO_ERROR) {
-                    fprintf(stderr, "Failed writing data to muxer (err=%d)\n",
+                    ALOGV("Failed writing data to muxer (err=%d)\n",
                             err);
                     return err;
                 }
@@ -360,7 +359,7 @@ static status_t runEncoder(const sp<MediaCodec>& encoder,
             }
             err = encoder->releaseOutputBuffer(bufIndex);
             if (err != NO_ERROR) {
-                fprintf(stderr, "Unable to release output buffer (err=%d)\n",
+                ALOGV("Unable to release output buffer (err=%d)\n",
                         err);
                 return err;
             }
@@ -383,7 +382,7 @@ static status_t runEncoder(const sp<MediaCodec>& encoder,
                 ALOGV("Starting muxer");
                 err = muxer->start();
                 if (err != NO_ERROR) {
-                    fprintf(stderr, "Unable to start muxer (err=%d)\n", err);
+                    ALOGV("Unable to start muxer (err=%d)\n", err);
                     return err;
                 }
             }
@@ -393,24 +392,22 @@ static status_t runEncoder(const sp<MediaCodec>& encoder,
             ALOGV("Encoder buffers changed");
             err = encoder->getOutputBuffers(&buffers);
             if (err != NO_ERROR) {
-                fprintf(stderr,
-                        "Unable to get new output buffers (err=%d)\n", err);
+                ALOGV("Unable to get new output buffers (err=%d)\n", err);
                 return err;
             }
             break;
         case INVALID_OPERATION:
-            fprintf(stderr, "Request for encoder buffer failed\n");
+            ALOGV("Request for encoder buffer failed\n");
             return err;
         default:
-            fprintf(stderr,
-                    "Got weird result %d from dequeueOutputBuffer\n", err);
+            ALOGV("Got weird result %d from dequeueOutputBuffer\n", err);
             return err;
         }
     }
 
     ALOGV("Encoder stopping (req=%d)", gStopRequested);
     if (gVerbose) {
-        printf("Encoder stopping; recorded %u frames in %lld seconds\n",
+        ALOGV("Encoder stopping; recorded %u frames in %lld seconds\n",
                 debugNumFrames,
                 nanoseconds_to_seconds(systemTime(CLOCK_MONOTONIC) - startWhenNsec));
     }
@@ -441,11 +438,11 @@ static status_t recordScreen(const char* fileName) {
     DisplayInfo mainDpyInfo;
     err = SurfaceComposerClient::getDisplayInfo(mainDpy, &mainDpyInfo);
     if (err != NO_ERROR) {
-        fprintf(stderr, "ERROR: unable to get display characteristics\n");
+        ALOGV("ERROR: unable to get display characteristics\n");
         return err;
     }
     if (gVerbose) {
-        printf("Main display is %dx%d @%.2ffps (orientation=%u)\n",
+        ALOGV("Main display is %dx%d @%.2ffps (orientation=%u)\n",
                 mainDpyInfo.w, mainDpyInfo.h, mainDpyInfo.fps,
                 mainDpyInfo.orientation);
     }
@@ -470,7 +467,7 @@ static status_t recordScreen(const char* fileName) {
         uint32_t newHeight = needSwap ? kFallbackWidth : kFallbackHeight;
         if (gVideoWidth != newWidth && gVideoHeight != newHeight) {
             ALOGV("Retrying with 720p");
-            fprintf(stderr, "WARNING: failed at %dx%d, retrying at %dx%d\n",
+            ALOGV("WARNING: failed at %dx%d, retrying at %dx%d\n",
                     gVideoWidth, gVideoHeight, newWidth, newHeight);
             gVideoWidth = newWidth;
             gVideoHeight = newHeight;
@@ -508,7 +505,7 @@ static status_t recordScreen(const char* fileName) {
     }
 
     if (gVerbose) {
-        printf("Stopping encoder and muxer\n");
+        ALOGV("Stopping encoder and muxer\n");
     }
 
     // Shut everything down, starting with the producer side.
