@@ -1,4 +1,5 @@
 #include "com_mindarc_screenrecorder_core_ScreenRecorder.h"
+#include "ScreenRecorder.h"
 
 #ifdef __cplusplus
 extern "C" {
@@ -20,7 +21,7 @@ JNIEXPORT jboolean JNICALL Java_com_mindarc_screenrecorder_core_ScreenRecorder_i
  */
 JNIEXPORT jboolean JNICALL Java_com_mindarc_screenrecorder_core_ScreenRecorder_start
   (JNIEnv *env, jclass clazz) {
-    return true;
+    return ScreenRecorder::getRecorder()->start();
 }
 
 /*
@@ -30,7 +31,7 @@ JNIEXPORT jboolean JNICALL Java_com_mindarc_screenrecorder_core_ScreenRecorder_s
  */
 JNIEXPORT jboolean JNICALL Java_com_mindarc_screenrecorder_core_ScreenRecorder_stop
   (JNIEnv *env, jclass clazz) {
-    return true;
+    return ScreenRecorder::getRecorder()->stop();
 }
 
 #ifdef __cplusplus

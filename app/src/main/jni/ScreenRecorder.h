@@ -7,6 +7,7 @@ class ScreenRecorder {
         bool init(int width, int height, int bitrate, int timeLimit, bool rotate, const char* destFilePath);
         bool start();
         bool stop();
+        bool isRunning();
     private:
         ScreenRecorder();
 };

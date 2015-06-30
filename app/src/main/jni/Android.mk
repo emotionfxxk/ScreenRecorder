@@ -17,7 +17,6 @@ LOCAL_PATH:= $(call my-dir)
 include $(CLEAR_VARS)
 
 LOCAL_SRC_FILES := \
-	screenrecord.cpp \
 	com_mindarc_screenrecorder_core_ScreenRecorder.cpp \
 	ScreenRecorder.cpp
 
@@ -35,6 +34,6 @@ LOCAL_CFLAGS += -Wno-multichar
 
 LOCAL_MODULE_TAGS := optional
 
-LOCAL_MODULE:= screenrecord
+LOCAL_MODULE:= screenrecorder
 
-include $(BUILD_EXECUTABLE)
+include $(BUILD_SHARED_LIBRARY)
