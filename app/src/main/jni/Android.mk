@@ -52,6 +52,6 @@ LOCAL_C_INCLUDES := \
 LOCAL_LDLIBS := -L$(LOCAL_PATH)/kikkat/libs -llog -lutils -lcutils -lstagefright_foundation -lstagefright -lgui -lbinder
 LOCAL_CFLAGS += -Wno-multichar
 LOCAL_MODULE_TAGS := optional
-LOCAL_MODULE:= screenrecord
+LOCAL_MODULE:= screenrecord_limit30
 
 include $(BUILD_EXECUTABLE)
