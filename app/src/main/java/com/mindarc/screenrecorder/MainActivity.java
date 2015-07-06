@@ -7,8 +7,8 @@ import android.view.Menu;
 import android.view.MenuItem;
 
 import com.mindarc.screenrecorder.core.ScreenRecorder;
+import com.mindarc.screenrecorder.utils.Shell;
 
-import java.io.DataOutputStream;
 import java.io.IOException;
 import java.io.OutputStreamWriter;
 
@@ -20,30 +20,7 @@ public class MainActivity extends ActionBarActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        Process p;
-        boolean rooted = false;
-        try {
-            // Preform su to get root privilege
-            p = Runtime.getRuntime().exec("su");
-
-            // Attempt to write a file to a root-only
-            DataOutputStream os = new DataOutputStream(p.getOutputStream());
-            os.writeBytes("echo \"Do I have root?\" >/system/sd/temporary.txt\n");
-
-            // Close the terminal
-            os.writeBytes("exit\n");
-            os.flush();
-            try {
-                p.waitFor();
-                if (p.exitValue() != 255) {
-                    rooted = true;
-                }
-            } catch (InterruptedException e) {
-                e.printStackTrace();
-            }
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
+        boolean rooted = Shell.requestRootPermission();
         if(rooted) {
             ScreenRecorder.init(720, 1280, 4000000, 5, false, "/sdcard/test1.mp4");
             ScreenRecorder.start();
