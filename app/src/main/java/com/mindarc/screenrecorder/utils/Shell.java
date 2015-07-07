@@ -1,7 +1,5 @@
 package com.mindarc.screenrecorder.utils;
 
-import com.mindarc.screenrecorder.LogUtil;
-
 import java.io.BufferedReader;
 import java.io.DataOutputStream;
 import java.io.IOException;
@@ -66,7 +64,7 @@ public class Shell {
         try {
             proc = runtime.exec("su");
             osw = new OutputStreamWriter(proc.getOutputStream());
-            osw.write(command);
+            osw.write(command + "\n");
             osw.write("exit\n");
             osw.flush();
             osw.close();

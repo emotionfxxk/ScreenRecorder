@@ -2,15 +2,11 @@ package com.mindarc.screenrecorder;
 
 import android.os.Bundle;
 import android.support.v7.app.ActionBarActivity;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 
 import com.mindarc.screenrecorder.core.ScreenRecorder;
 import com.mindarc.screenrecorder.utils.Shell;
-
-import java.io.IOException;
-import java.io.OutputStreamWriter;
 
 
 public class MainActivity extends ActionBarActivity {
@@ -28,47 +24,6 @@ public class MainActivity extends ActionBarActivity {
         }
     }
 
-    void execCommandLine(String command) {
-        Runtime runtime = Runtime.getRuntime();
-        Process proc = null;
-        OutputStreamWriter osw = null;
-
-        try
-        {
-            proc = runtime.exec("su");
-            osw = new OutputStreamWriter(proc.getOutputStream());
-            osw.write(command);
-            osw.flush();
-            osw.close();
-        }
-        catch (IOException ex)
-        {
-            Log.e("execCommandLine()", "Command resulted in an IO Exception: " + command);
-            return;
-        }
-        finally
-        {
-            if (osw != null)
-            {
-                try
-                {
-                    osw.close();
-                }
-                catch (IOException e){}
-            }
-        }
-
-        try
-        {
-            proc.waitFor();
-        }
-        catch (InterruptedException e){}
-
-        if (proc.exitValue() != 0)
-        {
-            Log.e("execCommandLine()", "Command returned error: " + command + "\n  Exit code: " + proc.exitValue());
-        }
-    }
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.

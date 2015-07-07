@@ -1,6 +1,8 @@
-package com.mindarc.screenrecorder;
+package com.mindarc.screenrecorder.utils;
 
 import android.util.Log;
+
+import com.mindarc.screenrecorder.BuildConfig;
 
 /**
  * Created by sean on 7/6/15.

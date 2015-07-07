@@ -2,7 +2,7 @@ package com.mindarc.screenrecorder.core;
 
 import android.os.Process;
 
-import com.mindarc.screenrecorder.LogUtil;
+import com.mindarc.screenrecorder.utils.LogUtil;
 import com.mindarc.screenrecorder.utils.Shell;
 
 /**
@@ -10,10 +10,11 @@ import com.mindarc.screenrecorder.utils.Shell;
  */
 public class ShellScreenRecorder {
     private final static String MUDULE_NAME = "ShellScreenRecorder";
-    private final static String SYS_RECORD_COMMAND = "/system/bin/screenrecord_limit30";
+    //private final static String SYS_RECORD_COMMAND = "/system/bin/screenrecord_limit30";
+    private final static String SYS_RECORD_COMMAND = "/system/bin/screenrecord";
 
     private ShellScreenRecorder() {}
-    private static boolean sIsRecording = false;
+    private static volatile boolean sIsRecording = false;
     private final static Object sStateLock = new Object();
     public static boolean isRecording() {
         synchronized (sStateLock) {
@@ -45,9 +46,9 @@ public class ShellScreenRecorder {
             LogUtil.i(MUDULE_NAME, "stop: recorder is not running");
             return;
         }
+        Shell.Result res = Shell.execCommand("ps | grep " + SYS_RECORD_COMMAND);
+        LogUtil.i(MUDULE_NAME, "res:" + res.errorMsg + "|" + res.succeedMsg + "|" + res.result);
         /*
-        CommandResult res = ShellUtils.execCommand("ps | grep " + SYS_RECORD_COMMAND, false);
-        Log.d("DEBUG", "res:" + res.errorMsg + "|" + res.successMsg + "|" + res.result);
         if (StringUtils.isNotEmpty(res.successMsg)) {
             List<String> list = blankSplitter.splitToList(res.successMsg);
             if (list != null && list.size() >= 2) {
