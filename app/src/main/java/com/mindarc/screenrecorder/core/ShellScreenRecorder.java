@@ -24,7 +24,7 @@ public class ShellScreenRecorder {
     public static boolean start(String fileName, int width, int height,
                                 int bitRate, int timeLimit, boolean rotate) {
         LogUtil.i(MUDULE_NAME, "try start with file name: " + fileName);
-        boolean isRecording = false;
+        boolean isRecording;
         synchronized (sStateLock) {
             isRecording = sIsRecording;
             if(!sIsRecording) {
@@ -48,16 +48,17 @@ public class ShellScreenRecorder {
         }
         Shell.Result res = Shell.execCommand("ps | grep " + SYS_RECORD_COMMAND);
         LogUtil.i(MUDULE_NAME, "res:" + res.errorMsg + "|" + res.succeedMsg + "|" + res.result);
-        /*
-        if (StringUtils.isNotEmpty(res.successMsg)) {
-            List<String> list = blankSplitter.splitToList(res.successMsg);
-            if (list != null && list.size() >= 2) {
-                String pidStr = list.get(1);
-                Log.d("DEBUG", "pidStr=" + pidStr);
-                res = ShellUtils.execCommand("kill -2 " + pidStr, true);
-                Log.d("DEBUG", "res:" + res.errorMsg + "|" + res.successMsg + "|" + res.result);
+        if(res.succeedMsg != null && !res.succeedMsg.equals("")) {
+            String[] processInfo = res.succeedMsg.split("\\s+");
+            for(String info : processInfo) {
+                LogUtil.i(MUDULE_NAME, "info: [" + info + "]");
             }
-        }*/
+            if(processInfo.length >= 2) {
+                LogUtil.i(MUDULE_NAME, "pid: [" + processInfo[1] + "]");
+                res = Shell.execCommand("kill -2 " + processInfo[1]);
+                LogUtil.i(MUDULE_NAME, "res:" + res.result);
+            }
+        }
     }
 
     private static class RecorderThread extends Thread {

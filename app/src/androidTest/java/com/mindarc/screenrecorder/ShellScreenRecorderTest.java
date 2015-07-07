@@ -42,4 +42,26 @@ public class ShellScreenRecorderTest extends AndroidTestCase {
             assertEquals(true, clip_5_s.exists());
         }
     }
+
+    public void test_15_s_screen_record() {
+        boolean rooted = Shell.requestRootPermission();
+        assertEquals(true, rooted);
+        final String fileName = "/sdcard/my_15s.mp4";
+        {
+            File clip_15_s = new File(fileName);
+            if(clip_15_s.exists())
+                clip_15_s.delete();
+        }
+
+        ShellScreenRecorder.start(fileName, 1280, 720, 4000000, 15, false);
+        assertEquals(true, ShellScreenRecorder.isRecording());
+
+        try {
+            Thread.sleep(6000);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+        ShellScreenRecorder.stop();
+        assertEquals(false, ShellScreenRecorder.isRecording());
+    }
 }
