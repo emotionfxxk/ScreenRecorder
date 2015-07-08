@@ -57,6 +57,7 @@ public class Shell {
     }
 
     public static Result execCommand(String command) {
+        LogUtil.i(MODULE_TAG, "execCommand: " + command);
         int result = -1;
         Runtime runtime = Runtime.getRuntime();
         Process proc = null;

@@ -3,17 +3,66 @@ package com.mindarc.screenrecorder;
 import android.test.AndroidTestCase;
 
 import com.mindarc.screenrecorder.core.ShellScreenRecorder;
+import com.mindarc.screenrecorder.utils.LogUtil;
 import com.mindarc.screenrecorder.utils.Shell;
 
 import java.io.File;
+import java.util.concurrent.locks.Condition;
+import java.util.concurrent.locks.Lock;
+import java.util.concurrent.locks.ReentrantLock;
 
 /**
  * Created by sean on 7/7/15.
  */
-public class ShellScreenRecorderTest extends AndroidTestCase {
+public class ShellScreenRecorderTest extends AndroidTestCase implements ShellScreenRecorder.StateListener {
+    private final static String MODULE_TAG = "ShellScreenRecorderTest";
+    final Lock mListenerLock = new ReentrantLock();
+    final Condition onInit = mListenerLock.newCondition();
+
+    private Object onStoppedLock = new Object();
+
+    @Override
+    public void onInitialized() {
+        LogUtil.i(MODULE_TAG, "onInitialized " + Thread.currentThread().getName());
+        mListenerLock.lock();
+        try {
+            onInit.signalAll();
+        } finally {
+            mListenerLock.unlock();
+        }
+    }
+
+    @Override
+    public void onStartRecorder(String fileName) {
+        LogUtil.i(MODULE_TAG, "onStartRecorder " + Thread.currentThread().getName() +
+                ", fileName:" + fileName);        mListenerLock.lock();
+    }
+
+    @Override
+    public void onStopRecorder(String fileName) {
+        LogUtil.i(MODULE_TAG, "onStopRecorder " + Thread.currentThread().getName() +
+                ", fileName:" + fileName);
+        synchronized (onStoppedLock) {
+            onStoppedLock.notifyAll();
+        }
+    }
+
     @Override
     protected void setUp() throws Exception {
         Shell.requestRootPermission();
+        ShellScreenRecorder.setsStateListener(this);
+        boolean inited = ShellScreenRecorder.init(getContext());
+
+        LogUtil.i(MODULE_TAG, "setUp before await " + Thread.currentThread().getName());
+        if(!inited) {
+            mListenerLock.lock();
+            try {
+                onInit.await();
+            } catch (Exception e) {
+            } finally {
+                mListenerLock.unlock();
+            }
+        }
         super.setUp();
     }
 
@@ -30,10 +79,14 @@ public class ShellScreenRecorderTest extends AndroidTestCase {
         ShellScreenRecorder.start(fileName, 1280, 720, 4000000, 5, false);
         assertEquals(true, ShellScreenRecorder.isRecording());
 
-        try {
-            Thread.sleep(8000);
-        } catch (InterruptedException e) {
-            e.printStackTrace();
+        if (ShellScreenRecorder.isRecording()) {
+            synchronized (onStoppedLock) {
+                try {
+                    onStoppedLock.wait();
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+            }
         }
 
         assertEquals(false, ShellScreenRecorder.isRecording());
@@ -57,11 +110,21 @@ public class ShellScreenRecorderTest extends AndroidTestCase {
         assertEquals(true, ShellScreenRecorder.isRecording());
 
         try {
-            Thread.sleep(6000);
-        } catch (InterruptedException e) {
-            e.printStackTrace();
+            Thread.sleep(5000);
+        } catch (Exception e) {
         }
+
         ShellScreenRecorder.stop();
+
+        if (ShellScreenRecorder.isRecording()) {
+            synchronized (onStoppedLock) {
+                try {
+                    onStoppedLock.wait();
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+            }
+        }
         assertEquals(false, ShellScreenRecorder.isRecording());
     }
 }
