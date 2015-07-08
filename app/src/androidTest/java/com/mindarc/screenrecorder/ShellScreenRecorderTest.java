@@ -48,6 +48,10 @@ public class ShellScreenRecorderTest extends AndroidTestCase implements ShellScr
     }
 
     @Override
+    public void onAbiNotSupported() {
+    }
+
+    @Override
     protected void setUp() throws Exception {
         Shell.requestRootPermission();
         ShellScreenRecorder.setsStateListener(this);

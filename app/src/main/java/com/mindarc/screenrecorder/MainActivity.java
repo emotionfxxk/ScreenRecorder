@@ -14,13 +14,7 @@ public class MainActivity extends ActionBarActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-
-        boolean rooted = Shell.requestRootPermission();
-        if(rooted) {
-            ScreenRecorder.init(720, 1280, 4000000, 5, false, "/sdcard/test1.mp4");
-            ScreenRecorder.start();
-            //execCommandLine("screenrecord --time-limit 6 /sdcard/6.mp4");
-        }
+        Shell.requestRootPermission();
     }
 
     @Override

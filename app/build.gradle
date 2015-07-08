@@ -14,7 +14,16 @@ android {
 
     sourceSets.main {
         jni.srcDirs = [] //disable automatic ndk-build call
-        jniLibs.srcDir 'src/main/libs'
+    }
+
+    task ndkBuild(type: Exec, description: 'Compile JNI source via NDK') {
+        commandLine "ndk-build",
+                '-C', file('src/main/jni').absolutePath,
+                'NDK_LIBS_OUT=../assets',
+                'APP_ABI=armeabi-v7a armeabi'
+    }
+    tasks.withType(JavaCompile) {
+        compileTask -> compileTask.dependsOn ndkBuild
     }
 
     buildTypes {
