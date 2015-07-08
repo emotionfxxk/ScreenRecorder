@@ -13,30 +13,6 @@
 # limitations under the License.
 
 LOCAL_PATH:= $(call my-dir)
-
-######################################################
-# libscreenrecorder.so
-######################################################
-include $(CLEAR_VARS)
-
-LOCAL_SRC_FILES := \
-	com_mindarc_screenrecorder_core_ScreenRecorder.cpp \
-	ScreenRecorder.cpp
-
-LOCAL_C_INCLUDES := \
-	kikkat/include \
-	kikkat/include/openmax \
-
-LOCAL_LDLIBS := -L$(LOCAL_PATH)/kikkat/libs -llog -lutils -lcutils -lstagefright_foundation -lstagefright -lgui -lbinder
-
-LOCAL_CFLAGS += -Wno-multichar
-
-LOCAL_MODULE_TAGS := optional
-
-LOCAL_MODULE:= screenrecorder
-
-include $(BUILD_SHARED_LIBRARY)
-
 ######################################################
 # bin: screenrecord
 ######################################################
