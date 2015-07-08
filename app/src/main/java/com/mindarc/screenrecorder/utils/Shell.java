@@ -56,8 +56,8 @@ public class Shell {
         return rooted;
     }
 
-    public static Result execCommand(String command) {
-        LogUtil.i(MODULE_TAG, "execCommand: " + command);
+    public static Result execCommandAsSu(String command) {
+        LogUtil.i(MODULE_TAG, "execCommandAsSu: " + command);
         int result = -1;
         Runtime runtime = Runtime.getRuntime();
         Process proc = null;
@@ -96,6 +96,36 @@ public class Shell {
                 }
                 catch (IOException e){}
             }
+        }
+    }
+
+    public static Result execCommand(String command) {
+        LogUtil.i(MODULE_TAG, "execCommand: " + command);
+        int result = -1;
+        Runtime runtime = Runtime.getRuntime();
+        Process proc = null;
+        try {
+            proc = runtime.exec("command");
+            result = proc.waitFor();
+            StringBuilder successMsg = new StringBuilder();
+            StringBuilder errorMsg = new StringBuilder();
+            BufferedReader successResult = new BufferedReader(
+                    new InputStreamReader(proc.getInputStream()));
+            BufferedReader errorResult = new BufferedReader(
+                    new InputStreamReader(proc.getErrorStream()));
+            String s;
+            while ((s = successResult.readLine()) != null) {
+                successMsg.append(s);
+            }
+            while ((s = errorResult.readLine()) != null) {
+                errorMsg.append(s);
+            }
+            return new Result(result, successMsg.toString(), errorMsg.toString());
+        } catch (Exception e) {
+            e.printStackTrace();
+            LogUtil.e(MODULE_TAG, "Command resulted in an IO Exception: " + command);
+            return new Result(result);
+        } finally {
         }
     }
 
