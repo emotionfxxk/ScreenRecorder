@@ -118,6 +118,7 @@ public class ShellScreenRecorder {
 
     public static boolean init(Context ctx) {
         if (isIsInitialized()) {
+            LogUtil.i(MUDULE_NAME, "init() already initialized!");
             return true;
         }
         sAppContext = ctx.getApplicationContext();

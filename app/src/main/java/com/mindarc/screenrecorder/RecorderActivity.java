@@ -47,7 +47,7 @@ public class RecorderActivity extends AppCompatActivity implements View.OnClickL
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        getApplicationContext().unregisterReceiver(mBc);
+        unregisterStateReceiver();
     }
 
     @Override
@@ -81,6 +81,13 @@ public class RecorderActivity extends AppCompatActivity implements View.OnClickL
         }
     }
 
+    private void unregisterStateReceiver() {
+        try {
+            getApplicationContext().unregisterReceiver(mBc);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
     private void init() {
         // TODO: update UI before init
         mShutter.setVisibility(View.INVISIBLE);
@@ -93,9 +100,7 @@ public class RecorderActivity extends AppCompatActivity implements View.OnClickL
 
     private void start_rec() {
         // TODO: update UI before start
-        mShutter.setText(R.string.shutter_starting);
-        mShutter.setVisibility(View.VISIBLE);
-        mShutter.setEnabled(false);
+        mShutter.setVisibility(View.INVISIBLE);
 
         // Send init request
         Intent intent = new Intent(this, RecorderService.class);
@@ -107,6 +112,10 @@ public class RecorderActivity extends AppCompatActivity implements View.OnClickL
         intent.putExtra(Constants.Key.BITRATE, 4000000);
         intent.putExtra(Constants.Key.ROTATE, false);
         startService(intent);
+
+        // back to home
+        unregisterStateReceiver();
+        finish();
     }
 
     private void stop_rec() {

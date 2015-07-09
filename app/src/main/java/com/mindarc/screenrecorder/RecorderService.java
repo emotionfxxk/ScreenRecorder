@@ -1,12 +1,19 @@
 package com.mindarc.screenrecorder;
 
+import android.app.Notification;
+import android.app.PendingIntent;
 import android.app.Service;
 import android.content.Intent;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.os.IBinder;
 
 import com.mindarc.screenrecorder.core.Profile;
 import com.mindarc.screenrecorder.core.ShellScreenRecorder;
 import com.mindarc.screenrecorder.utils.LogUtil;
+
+
+//import android.support.v4.app.NotificationCompat;
 
 /**
  * Created by sean on 7/9/15.
@@ -84,7 +91,9 @@ public class RecorderService extends Service implements ShellScreenRecorder.Stat
 
         if(action != null) {
             if (action.equals(Constants.Action.INIT)) {
-                ShellScreenRecorder.init(this);
+                if(ShellScreenRecorder.init(this)) {
+                    onInitialized();
+                }
             } else if (action.equals(Constants.Action.START_REC)) {
                 String fileName = intent.getStringExtra(Constants.Key.FILE_NAME);
                 int timeLimit = intent.getIntExtra(Constants.Key.TIME_LIMIT, Profile.MAX_TIME_LIMIT);
@@ -93,13 +102,48 @@ public class RecorderService extends Service implements ShellScreenRecorder.Stat
                 int bitrate = intent.getIntExtra(Constants.Key.BITRATE, Profile.FALLBACK_BITRATE);
                 boolean rotate = intent.getBooleanExtra(Constants.Key.ROTATE, Profile.FULLBACK_ROTATE);
                 ShellScreenRecorder.start(fileName, width, height, bitrate, timeLimit, rotate);
+
+                // setup notification
+                setupNofitication();
             } else if (action.equals(Constants.Action.STOP_REC)) {
                 ShellScreenRecorder.stop();
+                stopForeground(true);
             }
         }
 
         // We want this service to continue running until it is explicitly
         // stopped, so return sticky.
         return START_STICKY;
+    }
+
+    private void setupNofitication() {
+        Intent notificationIntent = new Intent(this, RecorderActivity.class);
+        notificationIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK
+                | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+        PendingIntent pendingIntent = PendingIntent.getActivity(this, 0,
+                notificationIntent, 0);
+
+        Intent stopIntent = new Intent(this, RecorderService.class);
+        stopIntent.setAction(Constants.Action.STOP_REC);
+        PendingIntent pendingStopIntent = PendingIntent.getService(this, 0,
+                stopIntent, 0);
+
+        Bitmap icon = BitmapFactory.decodeResource(getResources(),
+                R.mipmap.ic_launcher);
+
+        Notification notification = new Notification.Builder(this)
+                .setContentTitle(getResources().getString(R.string.app_name))
+                .setTicker(getResources().getString(R.string.app_name))
+                //.setContentText("My Music")
+                .setSmallIcon(R.mipmap.ic_launcher)
+                .setLargeIcon(
+                        Bitmap.createScaledBitmap(icon, 128, 128, false))
+                .setContentIntent(pendingIntent)
+                .setOngoing(true)
+                .addAction(android.R.drawable.ic_media_pause,
+                        getResources().getString(R.string.notification_action_stop), pendingStopIntent)
+                .build();
+        startForeground(Constants.FOREGROUND_SERVICE_ID,
+                notification);
     }
 }

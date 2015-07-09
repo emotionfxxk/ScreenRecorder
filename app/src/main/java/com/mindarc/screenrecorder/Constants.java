@@ -37,4 +37,6 @@ public class Constants {
         public final static int NOT_ROOTED = 1;
         public final static int ABI_NOT_SUPPORTED = 2;
     }
+
+    public static int FOREGROUND_SERVICE_ID = 621;
 }
