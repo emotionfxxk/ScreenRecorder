@@ -8,7 +8,7 @@ import android.view.MenuItem;
 import com.mindarc.screenrecorder.utils.Shell;
 
 
-public class MainActivity extends ActionBarActivity {
+public class RecorderActivity extends ActionBarActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
