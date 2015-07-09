@@ -17,6 +17,7 @@ import com.mindarc.screenrecorder.utils.LogUtil;
 public class RecorderActivity extends AppCompatActivity implements View.OnClickListener {
     private final static String MUDULE_NAME = "RecorderActivity";
     private Button mShutter;
+    private int mRecorderState = Constants.State.UNINITIALIZED;
     private BroadcastReceiver mBc = new BroadcastReceiver() {
         @Override
         public void onReceive(Context context, Intent intent) {
@@ -73,11 +74,16 @@ public class RecorderActivity extends AppCompatActivity implements View.OnClickL
 
     @Override
     public void onClick(View v) {
-
+        if (mRecorderState == Constants.State.FREE) {
+            start_rec();
+        } else if (mRecorderState == Constants.State.RECORDING) {
+            stop_rec();
+        }
     }
 
     private void init() {
         // TODO: update UI before init
+        mShutter.setVisibility(View.INVISIBLE);
 
         // Send init request
         Intent intent = new Intent(this, RecorderService.class);
@@ -87,23 +93,57 @@ public class RecorderActivity extends AppCompatActivity implements View.OnClickL
 
     private void start_rec() {
         // TODO: update UI before start
+        mShutter.setText(R.string.shutter_starting);
+        mShutter.setVisibility(View.VISIBLE);
+        mShutter.setEnabled(false);
 
         // Send init request
         Intent intent = new Intent(this, RecorderService.class);
         intent.setAction(Constants.Action.START_REC);
+        intent.putExtra(Constants.Key.FILE_NAME, "/sdcard/test1.mp4");
+        intent.putExtra(Constants.Key.TIME_LIMIT, 15);
+        intent.putExtra(Constants.Key.WIDTH, 720);
+        intent.putExtra(Constants.Key.HEIGHT, 1280);
+        intent.putExtra(Constants.Key.BITRATE, 4000000);
+        intent.putExtra(Constants.Key.ROTATE, false);
         startService(intent);
     }
 
     private void stop_rec() {
         // TODO: update UI stop start
+        mShutter.setText(R.string.shutter_stoping);
+        mShutter.setVisibility(View.VISIBLE);
+        mShutter.setEnabled(false);
 
         // Send init request
         Intent intent = new Intent(this, RecorderService.class);
-        intent.setAction(Constants.Action.START_REC);
+        intent.setAction(Constants.Action.STOP_REC);
         startService(intent);
     }
 
     private void onStateChanged(Intent intent) {
+        int state = intent.getIntExtra(Constants.Key.STATE, Constants.State.UNINITIALIZED);
+        int oldState = intent.getIntExtra(Constants.Key.OLD_STATE, Constants.State.UNINITIALIZED);
+        LogUtil.i(MUDULE_NAME, "onStateChanged state: " + state + ", oldState:" + oldState);
 
+        mRecorderState = state;
+        if (oldState == Constants.State.UNINITIALIZED && state == Constants.State.FREE) {
+            // TODO: succeed to init
+            mShutter.setText(R.string.shutter_start);
+            mShutter.setVisibility(View.VISIBLE);
+            mShutter.setEnabled(true);
+        } else if (oldState == Constants.State.FREE && state == Constants.State.RECORDING) {
+            // TODO: succeed to start
+            mShutter.setText(R.string.shutter_stop);
+            mShutter.setVisibility(View.VISIBLE);
+            mShutter.setEnabled(true);
+        } else if (oldState == Constants.State.RECORDING && state == Constants.State.FREE) {
+            // TODO: succeed to stop
+            mShutter.setText(R.string.shutter_start);
+            mShutter.setVisibility(View.VISIBLE);
+            mShutter.setEnabled(true);
+        } else if (oldState == Constants.State.UNINITIALIZED && state == Constants.State.FAILED_TO_INIT) {
+            // TODO: succeed to init
+        }
     }
 }

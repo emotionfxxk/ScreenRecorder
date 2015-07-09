@@ -168,21 +168,17 @@ public class ShellScreenRecorder {
     }
 
     private static class RecorderThread extends Thread {
-        private final static int FALLBACK_WIDTH = 1280;
-        private final static int FALLBACK_HEIGHT = 720;
-        private final static int FALLBACK_BITRATE = 4000000;    // 4M
-        private final static int MAX_TIME_LIMIT = 1800;         // 30 minutes
         private final String mFileName;
         private int mWidth, mHeight, mBitrate, mTimelimit;
         private boolean mRotate;
         public RecorderThread(String fileName, int width, int height,
                               int bitRate, int timeLimit, boolean rotate) {
             mFileName = fileName;
-            mWidth = (width <= 0 || height <= 0) ? FALLBACK_WIDTH : width;
-            mHeight = (width <= 0 || height <= 0) ? FALLBACK_HEIGHT : height;
+            mWidth = (width <= 0 || height <= 0) ? Profile.FALLBACK_WIDTH : width;
+            mHeight = (width <= 0 || height <= 0) ? Profile.FALLBACK_HEIGHT : height;
 
-            mBitrate = (bitRate > 0) ? bitRate : FALLBACK_BITRATE;
-            mTimelimit = (timeLimit <= 0 || timeLimit > MAX_TIME_LIMIT) ? MAX_TIME_LIMIT : timeLimit;
+            mBitrate = (bitRate > 0) ? bitRate : Profile.FALLBACK_BITRATE;
+            mTimelimit = (timeLimit <= 0 || timeLimit > Profile.MAX_TIME_LIMIT) ? Profile.MAX_TIME_LIMIT : timeLimit;
             mRotate = rotate;
         }
         @Override

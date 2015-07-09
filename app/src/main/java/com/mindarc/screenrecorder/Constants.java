@@ -17,6 +17,12 @@ public class Constants {
         public static String STATE = "state";
         public static String FILE_NAME = "fileName";
         public static String ERROR_ID = "error_id";
+
+        public static String WIDTH = "width";
+        public static String HEIGHT = "height";
+        public static String BITRATE = "bitrate";
+        public static String ROTATE = "rotate";
+        public static String TIME_LIMIT = "timeLimit";
     }
 
     public static class State {

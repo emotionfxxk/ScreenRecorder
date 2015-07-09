@@ -8,7 +8,7 @@ import com.mindarc.screenrecorder.BuildConfig;
  * Created by sean on 7/6/15.
  */
 public class LogUtil {
-    private static String APP_TAG = "SreenRecorder";
+    private static String APP_TAG = "ScreenRecorder";
     private LogUtil() {}
     public static void setAppTag(String appTag) {
         APP_TAG = appTag;

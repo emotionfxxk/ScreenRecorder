@@ -4,6 +4,7 @@ import android.app.Service;
 import android.content.Intent;
 import android.os.IBinder;
 
+import com.mindarc.screenrecorder.core.Profile;
 import com.mindarc.screenrecorder.core.ShellScreenRecorder;
 import com.mindarc.screenrecorder.utils.LogUtil;
 
@@ -84,6 +85,16 @@ public class RecorderService extends Service implements ShellScreenRecorder.Stat
         if(action != null) {
             if (action.equals(Constants.Action.INIT)) {
                 ShellScreenRecorder.init(this);
+            } else if (action.equals(Constants.Action.START_REC)) {
+                String fileName = intent.getStringExtra(Constants.Key.FILE_NAME);
+                int timeLimit = intent.getIntExtra(Constants.Key.TIME_LIMIT, Profile.MAX_TIME_LIMIT);
+                int width = intent.getIntExtra(Constants.Key.WIDTH, Profile.FALLBACK_WIDTH);
+                int height = intent.getIntExtra(Constants.Key.HEIGHT, Profile.FALLBACK_HEIGHT);
+                int bitrate = intent.getIntExtra(Constants.Key.BITRATE, Profile.FALLBACK_BITRATE);
+                boolean rotate = intent.getBooleanExtra(Constants.Key.ROTATE, Profile.FULLBACK_ROTATE);
+                ShellScreenRecorder.start(fileName, width, height, bitrate, timeLimit, rotate);
+            } else if (action.equals(Constants.Action.STOP_REC)) {
+                ShellScreenRecorder.stop();
             }
         }
 
