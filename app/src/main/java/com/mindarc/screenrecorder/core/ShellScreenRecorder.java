@@ -37,6 +37,8 @@ public class ShellScreenRecorder {
 
     private static Handler sHandler;
 
+    private static String sFileName;
+
     private final static class _MESSAGE {
         public final static int ON_INITIALIZED = 0;
         public final static int ON_START_RECORDER = 1;
@@ -92,6 +94,10 @@ public class ShellScreenRecorder {
         }
     }
 
+    public static String getFileName() {
+        return sFileName;
+    }
+
     public static boolean isIsInitialized() {
         synchronized (sStateLock) {
             return sState != Constants.State.UNINITIALIZED;
@@ -137,6 +143,7 @@ public class ShellScreenRecorder {
             if (sState == Constants.State.FREE) {
                 updateState(Constants.State.RECORDING, fileName, Constants.ErrorId.NO_ERROR);
                 new RecorderThread(fileName, width, height, bitRate, timeLimit, rotate).start();
+                sFileName = fileName;
                 return true;
             } else {
                 LogUtil.i(MUDULE_NAME, "failed to start record on state!" + sState);

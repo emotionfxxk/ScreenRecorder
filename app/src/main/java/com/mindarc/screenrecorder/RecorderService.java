@@ -12,9 +12,6 @@ import com.mindarc.screenrecorder.core.Profile;
 import com.mindarc.screenrecorder.core.ShellScreenRecorder;
 import com.mindarc.screenrecorder.utils.LogUtil;
 
-
-//import android.support.v4.app.NotificationCompat;
-
 /**
  * Created by sean on 7/9/15.
  */
@@ -45,6 +42,12 @@ public class RecorderService extends Service implements ShellScreenRecorder.Stat
     @Override
     public void onStopRecorder(String fileName) {
         LogUtil.i(MODULE_TAG, "onStopRecorder");
+        // start activity
+        Intent intent = new Intent(this, RecorderActivity.class);
+        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+        getApplicationContext().startActivity(intent);
+
+        // then we send broadcast
         Intent bcIntent = new Intent();
         bcIntent.setAction(Constants.Action.ON_REC_STATE_CHANGED);
         bcIntent.putExtra(Constants.Key.OLD_STATE, Constants.State.RECORDING);
@@ -92,7 +95,11 @@ public class RecorderService extends Service implements ShellScreenRecorder.Stat
         if(action != null) {
             if (action.equals(Constants.Action.INIT)) {
                 if(ShellScreenRecorder.init(this)) {
-                    onInitialized();
+                    if(ShellScreenRecorder.isRecording()) {
+                        onStartRecorder(ShellScreenRecorder.getFileName());
+                    } else {
+                        onInitialized();
+                    }
                 }
             } else if (action.equals(Constants.Action.START_REC)) {
                 String fileName = intent.getStringExtra(Constants.Key.FILE_NAME);
@@ -104,7 +111,7 @@ public class RecorderService extends Service implements ShellScreenRecorder.Stat
                 ShellScreenRecorder.start(fileName, width, height, bitrate, timeLimit, rotate);
 
                 // setup notification
-                setupNofitication();
+                setupNotification();
             } else if (action.equals(Constants.Action.STOP_REC)) {
                 ShellScreenRecorder.stop();
                 stopForeground(true);
@@ -116,32 +123,24 @@ public class RecorderService extends Service implements ShellScreenRecorder.Stat
         return START_STICKY;
     }
 
-    private void setupNofitication() {
-        Intent notificationIntent = new Intent(this, RecorderActivity.class);
-        notificationIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK
-                | Intent.FLAG_ACTIVITY_CLEAR_TASK);
-        PendingIntent pendingIntent = PendingIntent.getActivity(this, 0,
+    private void setupNotification() {
+        Intent notificationIntent = new Intent(this, RecorderService.class);
+        notificationIntent.setAction(Constants.Action.STOP_REC);
+        PendingIntent pendingIntent = PendingIntent.getService(this, 0,
                 notificationIntent, 0);
 
-        Intent stopIntent = new Intent(this, RecorderService.class);
-        stopIntent.setAction(Constants.Action.STOP_REC);
-        PendingIntent pendingStopIntent = PendingIntent.getService(this, 0,
-                stopIntent, 0);
-
         Bitmap icon = BitmapFactory.decodeResource(getResources(),
-                R.mipmap.ic_launcher);
+                R.mipmap.ic_stop);
 
         Notification notification = new Notification.Builder(this)
                 .setContentTitle(getResources().getString(R.string.app_name))
                 .setTicker(getResources().getString(R.string.app_name))
-                //.setContentText("My Music")
-                .setSmallIcon(R.mipmap.ic_launcher)
+                .setContentText(getResources().getString(R.string.notification_action_stop))
+                .setSmallIcon(R.mipmap.ic_stop)
                 .setLargeIcon(
                         Bitmap.createScaledBitmap(icon, 128, 128, false))
                 .setContentIntent(pendingIntent)
                 .setOngoing(true)
-                .addAction(android.R.drawable.ic_media_pause,
-                        getResources().getString(R.string.notification_action_stop), pendingStopIntent)
                 .build();
         startForeground(Constants.FOREGROUND_SERVICE_ID,
                 notification);
