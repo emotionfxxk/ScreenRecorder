@@ -1,14 +1,14 @@
 package com.mindarc.screenrecorder;
 
 import android.os.Bundle;
-import android.support.v7.app.ActionBarActivity;
+import android.support.v7.app.AppCompatActivity;
 import android.view.Menu;
 import android.view.MenuItem;
 
 import com.mindarc.screenrecorder.utils.Shell;
 
 
-public class RecorderActivity extends ActionBarActivity {
+public class RecorderActivity extends AppCompatActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {

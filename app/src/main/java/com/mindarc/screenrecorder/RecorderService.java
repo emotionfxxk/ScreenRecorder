@@ -72,12 +72,24 @@ public class RecorderService extends Service implements ShellScreenRecorder.Stat
     }
 
     @Override
-    public void onAbiNotSupported() {
-        LogUtil.i(MODULE_TAG, "onAbiNotSupported");
+    public void onFailedToInit(int reason) {
+        LogUtil.i(MODULE_TAG, "onFailedToInit reason:" + reason);
         ShellScreenRecorder.StateListener ls = mRecorderListener.get();
         if (ls != null) {
-            ls.onAbiNotSupported();
+            ls.onFailedToInit(reason);
         }
+    }
+
+    @Override
+    public void onCreate() {
+        LogUtil.i(MODULE_TAG, "onCreate");
+        super.onCreate();
+    }
+
+    @Override
+    public void onDestroy() {
+        LogUtil.i(MODULE_TAG, "onDestroy");
+        super.onDestroy();
     }
 
     @Override

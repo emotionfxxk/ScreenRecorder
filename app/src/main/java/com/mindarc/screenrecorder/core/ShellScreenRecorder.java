@@ -31,7 +31,7 @@ public class ShellScreenRecorder {
         UNINITIALIZED,
         FREE,
         RECORDING,
-        ABI_NOT_SUPPORT,
+        FAILED_TO_INIT,
     }
     private final static Object sStateLock = new Object();
     private static State sState = State.UNINITIALIZED;
@@ -46,7 +46,13 @@ public class ShellScreenRecorder {
         public final static int ON_INITIALIZED = 0;
         public final static int ON_START_RECORDER = 1;
         public final static int ON_STOP_RECORDER = 2;
-        public final static int ON_ABI_NOT_SUPPORT = 3;
+        public final static int ON_FAILED_TO_INIT = 3;
+    }
+
+    public final static class ErrorId {
+        public final static int NO_ERROR = 0;
+        public final static int NOT_ROOTED = 1;
+        public final static int ABI_NOT_SUPPORTED = 2;
     }
 
     private static Handler.Callback sMessageDispatcher = new Handler.Callback() {
@@ -70,8 +76,8 @@ public class ShellScreenRecorder {
                 case _MESSAGE.ON_STOP_RECORDER:
                     l.onStopRecorder((String) msg.obj);
                     break;
-                case _MESSAGE.ON_ABI_NOT_SUPPORT:
-                    l.onAbiNotSupported();
+                case _MESSAGE.ON_FAILED_TO_INIT:
+                    l.onFailedToInit(msg.arg1);
                     break;
             }
             return true;
@@ -82,7 +88,7 @@ public class ShellScreenRecorder {
         void onInitialized();
         void onStartRecorder(String fileName);
         void onStopRecorder(String fileName);
-        void onAbiNotSupported();
+        void onFailedToInit(int reason);
     }
 
     public static void setsStateListener(StateListener l) {
@@ -103,7 +109,7 @@ public class ShellScreenRecorder {
         }
     }
 
-    private static void updateState(final State s, final String fileName) {
+    private static void updateState(final State s, final String message, final int errId) {
         State old;
         synchronized (sStateLock) {
             old = sState;
@@ -113,11 +119,11 @@ public class ShellScreenRecorder {
         if (old == State.UNINITIALIZED && s == State.FREE) {
             sHandler.sendEmptyMessage(_MESSAGE.ON_INITIALIZED);
         } else if (old == State.FREE && s == State.RECORDING) {
-            sHandler.sendMessage(sHandler.obtainMessage(_MESSAGE.ON_START_RECORDER, fileName));
+            sHandler.sendMessage(sHandler.obtainMessage(_MESSAGE.ON_START_RECORDER, message));
         } else if (old == State.RECORDING && s == State.FREE) {
-            sHandler.sendMessage(sHandler.obtainMessage(_MESSAGE.ON_STOP_RECORDER, fileName));
-        } else if (s == State.ABI_NOT_SUPPORT) {
-            sHandler.sendEmptyMessage(_MESSAGE.ON_ABI_NOT_SUPPORT);
+            sHandler.sendMessage(sHandler.obtainMessage(_MESSAGE.ON_STOP_RECORDER, message));
+        } else if (s == State.FAILED_TO_INIT) {
+            sHandler.sendEmptyMessage(_MESSAGE.ON_FAILED_TO_INIT);
         }
     }
 
@@ -139,7 +145,7 @@ public class ShellScreenRecorder {
         }
         synchronized (sStateLock) {
             if (sState == State.FREE) {
-                updateState(State.RECORDING, fileName);
+                updateState(State.RECORDING, fileName, ErrorId.NO_ERROR);
                 new RecorderThread(fileName, width, height, bitRate, timeLimit, rotate).start();
                 return true;
             } else {
@@ -206,7 +212,7 @@ public class ShellScreenRecorder {
             commandLine.append(" ").append(mFileName);
             LogUtil.i(MUDULE_NAME, "command:" + commandLine.toString());
             Shell.execCommandAsSu(commandLine.toString());
-            updateState(ShellScreenRecorder.State.FREE, mFileName);
+            updateState(ShellScreenRecorder.State.FREE, mFileName, ErrorId.NO_ERROR);
             LogUtil.i(MUDULE_NAME, "leaving record thread...");
         }
     }
@@ -226,24 +232,31 @@ public class ShellScreenRecorder {
                 }
             }
             if(chooseAbiType != null) {
-                FULL_PATH_OF_RECORD_COMMAND = sAppContext.getApplicationInfo().dataDir + "/" +
-                        BINARY_SUB_PATH + "/" + BINARY_NAME;
-                File binaryFile = new File(FULL_PATH_OF_RECORD_COMMAND);
-                boolean exist = binaryFile.exists();
-                LogUtil.i(MUDULE_NAME, "binaryFullPath:" + FULL_PATH_OF_RECORD_COMMAND + ", exist:" + exist);
-                if (!exist) {
-                    // copy file from assets
-                    AssetsHelper.cloneFile(sAppContext, chooseAbiType + "/" + BINARY_NAME,
-                            FULL_PATH_OF_RECORD_COMMAND);
+                // then we check root first
+                boolean rooted = Shell.requestRootPermission();
+                LogUtil.i(MUDULE_NAME, "rooted:" + rooted);
+                if(!rooted) {
+                    updateState(ShellScreenRecorder.State.FAILED_TO_INIT, null, ErrorId.NOT_ROOTED);
+                } else {
+                    FULL_PATH_OF_RECORD_COMMAND = sAppContext.getApplicationInfo().dataDir + "/" +
+                            BINARY_SUB_PATH + "/" + BINARY_NAME;
+                    File binaryFile = new File(FULL_PATH_OF_RECORD_COMMAND);
+                    boolean exist = binaryFile.exists();
+                    LogUtil.i(MUDULE_NAME, "binaryFullPath:" + FULL_PATH_OF_RECORD_COMMAND + ", exist:" + exist);
+                    if (!exist) {
+                        // copy file from assets
+                        AssetsHelper.cloneFile(sAppContext, chooseAbiType + "/" + BINARY_NAME,
+                                FULL_PATH_OF_RECORD_COMMAND);
+                    }
+
+                    // add execution permission to binary
+                    String commandLine = "chmod 777 " + FULL_PATH_OF_RECORD_COMMAND;
+                    Shell.execCommandAsSu(commandLine);
+
+                    updateState(ShellScreenRecorder.State.FREE, null, ErrorId.NO_ERROR);
                 }
-
-                // add execution permission to binary
-                String commandLine = "chmod 777 " + FULL_PATH_OF_RECORD_COMMAND;
-                Shell.execCommandAsSu(commandLine);
-
-                updateState(ShellScreenRecorder.State.FREE, null);
             } else {
-                updateState(ShellScreenRecorder.State.ABI_NOT_SUPPORT, null);
+                updateState(ShellScreenRecorder.State.FAILED_TO_INIT, null, ErrorId.ABI_NOT_SUPPORTED);
                 LogUtil.w(MUDULE_NAME, "abi type not support!!!...");
             }
             LogUtil.i(MUDULE_NAME, "leaving init thread...");

@@ -48,7 +48,9 @@ public class ShellScreenRecorderTest extends AndroidTestCase implements ShellScr
     }
 
     @Override
-    public void onAbiNotSupported() {
+    public void onFailedToInit(int reason) {
+        LogUtil.i(MODULE_TAG, "onFailedToInit " + Thread.currentThread().getName() +
+                ", reason:" + reason);
     }
 
     @Override
