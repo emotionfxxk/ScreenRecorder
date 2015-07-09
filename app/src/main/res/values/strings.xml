@@ -1,6 +1,8 @@
 <resources>
     <string name="app_name">ScreenRecorder</string>
     <string name="action_settings">Settings</string>
-    <string name="shutter_start">Start Recording</string>
+    <string name="shutter_start">Start Record</string>
+    <string name="shutter_starting">Starting&#8230;</string>
     <string name="shutter_stop">Stop Recording</string>
+    <string name="shutter_stoping">Stopping&#8230;</string>
 </resources>

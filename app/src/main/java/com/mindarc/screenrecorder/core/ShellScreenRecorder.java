@@ -6,6 +6,7 @@ import android.os.Handler;
 import android.os.Message;
 import android.os.Process;
 
+import com.mindarc.screenrecorder.Constants;
 import com.mindarc.screenrecorder.utils.AssetsHelper;
 import com.mindarc.screenrecorder.utils.LogUtil;
 import com.mindarc.screenrecorder.utils.Shell;
@@ -27,14 +28,8 @@ public class ShellScreenRecorder {
 
     private ShellScreenRecorder() {}
 
-    private enum State {
-        UNINITIALIZED,
-        FREE,
-        RECORDING,
-        FAILED_TO_INIT,
-    }
     private final static Object sStateLock = new Object();
-    private static State sState = State.UNINITIALIZED;
+    private static int sState = Constants.State.UNINITIALIZED;
 
     private static StateListener sStateListener;
 
@@ -47,12 +42,6 @@ public class ShellScreenRecorder {
         public final static int ON_START_RECORDER = 1;
         public final static int ON_STOP_RECORDER = 2;
         public final static int ON_FAILED_TO_INIT = 3;
-    }
-
-    public final static class ErrorId {
-        public final static int NO_ERROR = 0;
-        public final static int NOT_ROOTED = 1;
-        public final static int ABI_NOT_SUPPORTED = 2;
     }
 
     private static Handler.Callback sMessageDispatcher = new Handler.Callback() {
@@ -99,30 +88,30 @@ public class ShellScreenRecorder {
 
     public static boolean isRecording() {
         synchronized (sStateLock) {
-            return sState == State.RECORDING;
+            return sState == Constants.State.RECORDING;
         }
     }
 
     public static boolean isIsInitialized() {
         synchronized (sStateLock) {
-            return sState != State.UNINITIALIZED;
+            return sState != Constants.State.UNINITIALIZED;
         }
     }
 
-    private static void updateState(final State s, final String message, final int errId) {
-        State old;
+    private static void updateState(final int s, final String message, final int errId) {
+        int old;
         synchronized (sStateLock) {
             old = sState;
             sState = s;
         }
 
-        if (old == State.UNINITIALIZED && s == State.FREE) {
+        if (old == Constants.State.UNINITIALIZED && s == Constants.State.FREE) {
             sHandler.sendEmptyMessage(_MESSAGE.ON_INITIALIZED);
-        } else if (old == State.FREE && s == State.RECORDING) {
+        } else if (old == Constants.State.FREE && s == Constants.State.RECORDING) {
             sHandler.sendMessage(sHandler.obtainMessage(_MESSAGE.ON_START_RECORDER, message));
-        } else if (old == State.RECORDING && s == State.FREE) {
+        } else if (old == Constants.State.RECORDING && s == Constants.State.FREE) {
             sHandler.sendMessage(sHandler.obtainMessage(_MESSAGE.ON_STOP_RECORDER, message));
-        } else if (s == State.FAILED_TO_INIT) {
+        } else if (s == Constants.State.FAILED_TO_INIT) {
             sHandler.sendEmptyMessage(_MESSAGE.ON_FAILED_TO_INIT);
         }
     }
@@ -144,8 +133,8 @@ public class ShellScreenRecorder {
             throw new IllegalStateException("not initialized! sState:" + sState);
         }
         synchronized (sStateLock) {
-            if (sState == State.FREE) {
-                updateState(State.RECORDING, fileName, ErrorId.NO_ERROR);
+            if (sState == Constants.State.FREE) {
+                updateState(Constants.State.RECORDING, fileName, Constants.ErrorId.NO_ERROR);
                 new RecorderThread(fileName, width, height, bitRate, timeLimit, rotate).start();
                 return true;
             } else {
@@ -212,7 +201,7 @@ public class ShellScreenRecorder {
             commandLine.append(" ").append(mFileName);
             LogUtil.i(MUDULE_NAME, "command:" + commandLine.toString());
             Shell.execCommandAsSu(commandLine.toString());
-            updateState(ShellScreenRecorder.State.FREE, mFileName, ErrorId.NO_ERROR);
+            updateState(Constants.State.FREE, mFileName, Constants.ErrorId.NO_ERROR);
             LogUtil.i(MUDULE_NAME, "leaving record thread...");
         }
     }
@@ -236,7 +225,7 @@ public class ShellScreenRecorder {
                 boolean rooted = Shell.requestRootPermission();
                 LogUtil.i(MUDULE_NAME, "rooted:" + rooted);
                 if(!rooted) {
-                    updateState(ShellScreenRecorder.State.FAILED_TO_INIT, null, ErrorId.NOT_ROOTED);
+                    updateState(Constants.State.FAILED_TO_INIT, null, Constants.ErrorId.NOT_ROOTED);
                 } else {
                     FULL_PATH_OF_RECORD_COMMAND = sAppContext.getApplicationInfo().dataDir + "/" +
                             BINARY_SUB_PATH + "/" + BINARY_NAME;
@@ -253,10 +242,10 @@ public class ShellScreenRecorder {
                     String commandLine = "chmod 777 " + FULL_PATH_OF_RECORD_COMMAND;
                     Shell.execCommandAsSu(commandLine);
 
-                    updateState(ShellScreenRecorder.State.FREE, null, ErrorId.NO_ERROR);
+                    updateState(Constants.State.FREE, null, Constants.ErrorId.NO_ERROR);
                 }
             } else {
-                updateState(ShellScreenRecorder.State.FAILED_TO_INIT, null, ErrorId.ABI_NOT_SUPPORTED);
+                updateState(Constants.State.FAILED_TO_INIT, null, Constants.ErrorId.ABI_NOT_SUPPORTED);
                 LogUtil.w(MUDULE_NAME, "abi type not support!!!...");
             }
             LogUtil.i(MUDULE_NAME, "leaving init thread...");
