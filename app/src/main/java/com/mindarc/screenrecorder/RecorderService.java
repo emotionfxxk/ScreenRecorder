@@ -54,6 +54,8 @@ public class RecorderService extends Service implements ShellScreenRecorder.Stat
         bcIntent.putExtra(Constants.Key.STATE, Constants.State.FREE);
         bcIntent.putExtra(Constants.Key.FILE_NAME, fileName);
         sendBroadcast(bcIntent);
+
+        stopForeground(true);
     }
 
     @Override

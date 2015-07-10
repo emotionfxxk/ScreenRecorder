@@ -5,7 +5,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.os.Bundle;
-import android.support.v7.app.AppCompatActivity;
+import android.support.v7.app.ActionBarActivity;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -15,7 +15,7 @@ import com.mindarc.screenrecorder.utils.LogUtil;
 import com.mindarc.screenrecorder.utils.StorageHelper;
 
 
-public class RecorderActivity extends AppCompatActivity implements View.OnClickListener {
+public class RecorderActivity extends ActionBarActivity implements View.OnClickListener {
     private final static String MUDULE_NAME = "RecorderActivity";
     private Button mShutter;
     private int mRecorderState = Constants.State.UNINITIALIZED;
