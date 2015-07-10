@@ -100,7 +100,8 @@ public class ShellScreenRecorder {
 
     public static boolean isIsInitialized() {
         synchronized (sStateLock) {
-            return sState != Constants.State.UNINITIALIZED;
+            return sState != Constants.State.UNINITIALIZED &&
+                    sState != Constants.State.FAILED_TO_INIT;
         }
     }
 
