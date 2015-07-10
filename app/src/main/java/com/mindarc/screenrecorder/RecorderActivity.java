@@ -12,6 +12,7 @@ import android.view.View;
 import android.widget.Button;
 
 import com.mindarc.screenrecorder.utils.LogUtil;
+import com.mindarc.screenrecorder.utils.StorageHelper;
 
 
 public class RecorderActivity extends AppCompatActivity implements View.OnClickListener {
@@ -41,6 +42,8 @@ public class RecorderActivity extends AppCompatActivity implements View.OnClickL
         intentFilter.addAction(Constants.Action.ON_REC_STATE_CHANGED);
         getApplicationContext().registerReceiver(mBc, intentFilter);
 
+        StorageHelper.sStorageHelper.init(this);
+        StorageHelper.sStorageHelper.generateFileName();
         init();
     }
 
@@ -48,6 +51,7 @@ public class RecorderActivity extends AppCompatActivity implements View.OnClickL
     protected void onDestroy() {
         super.onDestroy();
         unregisterStateReceiver();
+        StorageHelper.sStorageHelper.deInit(this);
     }
 
     @Override
