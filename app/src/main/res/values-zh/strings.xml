@@ -8,4 +8,5 @@
     <string name="shutter_stoping">停止录制中&#8230;</string>
 
     <string name="notification_action_stop">停止录制</string>
+    <string name="initialize_hint">初始化中&#8230;</string>
 </resources>

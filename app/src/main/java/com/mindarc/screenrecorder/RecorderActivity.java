@@ -18,6 +18,7 @@ import com.mindarc.screenrecorder.utils.StorageHelper;
 public class RecorderActivity extends ActionBarActivity implements View.OnClickListener {
     private final static String MUDULE_NAME = "RecorderActivity";
     private Button mShutter;
+    private View mProgress;
     private int mRecorderState = Constants.State.UNINITIALIZED;
     private BroadcastReceiver mBc = new BroadcastReceiver() {
         @Override
@@ -35,6 +36,7 @@ public class RecorderActivity extends ActionBarActivity implements View.OnClickL
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+        mProgress = findViewById(R.id.progress_wrapper);
         mShutter = (Button) findViewById(R.id.shutter);
         mShutter.setOnClickListener(this);
 
@@ -95,6 +97,7 @@ public class RecorderActivity extends ActionBarActivity implements View.OnClickL
     private void init() {
         // TODO: update UI before init
         mShutter.setVisibility(View.INVISIBLE);
+        mProgress.setVisibility(View.VISIBLE);
 
         // Send init request
         Intent intent = new Intent(this, RecorderService.class);
@@ -144,6 +147,7 @@ public class RecorderActivity extends ActionBarActivity implements View.OnClickL
             // TODO: succeed to init
             mShutter.setText(R.string.shutter_start);
             mShutter.setVisibility(View.VISIBLE);
+            mProgress.setVisibility(View.INVISIBLE);
             mShutter.setEnabled(true);
         } else if (oldState == Constants.State.FREE && state == Constants.State.RECORDING) {
             // TODO: succeed to start
@@ -156,7 +160,7 @@ public class RecorderActivity extends ActionBarActivity implements View.OnClickL
             mShutter.setVisibility(View.VISIBLE);
             mShutter.setEnabled(true);
         } else if (oldState == Constants.State.UNINITIALIZED && state == Constants.State.FAILED_TO_INIT) {
-            // TODO: succeed to init
+            // TODO: failed to init
         }
     }
 }

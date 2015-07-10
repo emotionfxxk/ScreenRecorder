@@ -3,12 +3,52 @@
     android:layout_height="match_parent" android:paddingLeft="@dimen/activity_horizontal_margin"
     android:paddingRight="@dimen/activity_horizontal_margin"
     android:paddingTop="@dimen/activity_vertical_margin"
-    android:paddingBottom="@dimen/activity_vertical_margin" tools:context=".MainActivity">
-
-    <Button
-        android:id="@+id/shutter"
-        android:layout_width="match_parent"
+    android:paddingBottom="@dimen/activity_vertical_margin"
+    android:background="#323438"
+    tools:context=".MainActivity">
+    <RelativeLayout
+        android:id="@+id/progress_wrapper"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_alignParentBottom="true"
-        android:text="@string/shutter_start" />
+        android:layout_centerInParent="true" >
+        <fr.castorflex.android.circularprogressbar.CircularProgressBar
+            android:id="@+id/init_progress"
+            xmlns:android="http://schemas.android.com/apk/res/android"
+            xmlns:app="http://schemas.android.com/apk/res-auto"
+            android:layout_width="96dp"
+            android:layout_height="96dp"
+            android:layout_centerHorizontal="true"
+            android:indeterminate="true"
+            app:cpb_color="#FFee44"
+            app:cpb_rotation_speed="1.0"
+            app:cpb_sweep_speed="1.0"
+            app:cpb_stroke_width="8dp"
+            app:cpb_min_sweep_angle="10"
+            app:cpb_max_sweep_angle="300"
+            app:cpb_colors="@array/gplus_colors"/>
+        <TextView
+            android:layout_below="@id/init_progress"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerHorizontal="true"
+            android:layout_marginTop="8dp"
+            android:textSize="22sp"
+            android:textColor="@android:color/white"
+            android:text="@string/initialize_hint" />
+    </RelativeLayout>
+
+    <RelativeLayout
+        android:id="@+id/compress_button_layout"
+        android:layout_width="match_parent"
+        android:layout_height="48dp"
+        android:layout_alignParentBottom="true" >
+        <Button
+            android:id="@+id/shutter"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:text="@string/shutter_start"
+            android:textSize="22sp"
+            android:background="@drawable/bg_red_box"
+            android:textColor="@android:color/white"/>
+    </RelativeLayout>
 </RelativeLayout>
