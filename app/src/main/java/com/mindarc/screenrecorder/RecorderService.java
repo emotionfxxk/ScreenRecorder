@@ -130,13 +130,13 @@ public class RecorderService extends Service implements ShellScreenRecorder.Stat
                 notificationIntent, 0);
 
         Bitmap icon = BitmapFactory.decodeResource(getResources(),
-                R.mipmap.ic_stop);
+                R.drawable.ic_stop);
 
         Notification notification = new Notification.Builder(this)
                 .setContentTitle(getResources().getString(R.string.app_name))
                 .setTicker(getResources().getString(R.string.app_name))
                 .setContentText(getResources().getString(R.string.notification_action_stop))
-                .setSmallIcon(R.mipmap.ic_stop)
+                .setSmallIcon(R.drawable.ic_stop)
                 .setLargeIcon(
                         Bitmap.createScaledBitmap(icon, 128, 128, false))
                 .setContentIntent(pendingIntent)
