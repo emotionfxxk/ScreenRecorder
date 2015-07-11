@@ -1,0 +1,14 @@
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/compress_button_layout"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent" >
+    <Button
+        android:id="@+id/shutter"
+        android:layout_width="match_parent"
+        android:layout_height="48dp"
+        android:layout_alignParentBottom="true"
+        android:text="@string/shutter_start"
+        android:textSize="22sp"
+        android:background="@drawable/bg_red_box"
+        android:textColor="@android:color/white"/>
+</RelativeLayout>
