@@ -6,7 +6,9 @@ import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.TextView;
 
+import com.mindarc.screenrecorder.Constants;
 import com.mindarc.screenrecorder.R;
 import com.mindarc.screenrecorder.utils.LogUtil;
 
@@ -15,9 +17,13 @@ import com.mindarc.screenrecorder.utils.LogUtil;
  */
 public class ErrorFragment extends Fragment {
     private final static String MODULE_TAG = "ErrorFragment";
-    private final int mErrorId;
-    private ErrorFragment(int error_Id) {
-        mErrorId = error_Id;
+    private int mErrorId;
+    private TextView mErrorMessage;
+
+    public static ErrorFragment newInstance(int errorId) {
+        ErrorFragment fragment = new ErrorFragment();
+        fragment.mErrorId = errorId;
+        return fragment;
     }
 
     @Override
@@ -31,6 +37,16 @@ public class ErrorFragment extends Fragment {
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         View rootView = inflater.inflate(R.layout.error_fragment, container, false);
+        mErrorMessage = (TextView) rootView.findViewById(R.id.error_message);
+
+        switch (mErrorId) {
+            case Constants.ErrorId.ABI_NOT_SUPPORTED:
+                mErrorMessage.setText(R.string.abi_not_supported);
+                break;
+            case Constants.ErrorId.NOT_ROOTED:
+                mErrorMessage.setText(R.string.not_rooted);
+                break;
+        }
         return rootView;
     }
 

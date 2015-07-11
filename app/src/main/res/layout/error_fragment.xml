@@ -6,26 +6,15 @@
         android:layout_height="wrap_content"
         android:layout_centerInParent="true" >
         <TextView
-            android:id="@+id/title"
+            android:id="@+id/error_message"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:background="#D32F2F"
             android:textColor="@android:color/white"
             android:padding="16dp"
             android:gravity="center"
-            android:textSize="32sp"
-            android:typeface="serif"
-            android:textStyle="bold"
-            android:text="Phone not supported" />
-        <TextView
-            android:id="@+id/detail"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_below="@id/title"
-            android:background="@android:color/white"
-            android:textColor="@android:color/black"
             android:textSize="26sp"
-            android:typeface="monospace"
-            android:text="We only supported phone with arm kernel now" />
+            android:typeface="sans"
+            android:textStyle="bold"
+            android:drawableTop="@drawable/ic_error" />
     </RelativeLayout>
 </RelativeLayout>

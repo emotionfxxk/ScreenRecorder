@@ -8,4 +8,7 @@
 
     <string name="notification_action_stop">Touch to stop</string>
     <string name="initialize_hint">Initializing&#8230;</string>
+
+    <string name="abi_not_supported">Phone not supported!</string>
+    <string name="not_rooted">Phone not Rooted!</string>
 </resources>

@@ -9,4 +9,7 @@
 
     <string name="notification_action_stop">停止录制</string>
     <string name="initialize_hint">初始化中&#8230;</string>
+
+    <string name="abi_not_supported">手机不支持</string>
+    <string name="not_rooted">手机没有Root</string>
 </resources>

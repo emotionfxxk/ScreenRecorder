@@ -9,6 +9,7 @@ import android.view.Menu;
 import android.view.MenuItem;
 
 import com.mindarc.screenrecorder.event.InitEvent;
+import com.mindarc.screenrecorder.fragment.ErrorFragment;
 import com.mindarc.screenrecorder.fragment.InitFragment;
 import com.mindarc.screenrecorder.fragment.RecorderFragment;
 import com.mindarc.screenrecorder.utils.LogUtil;
@@ -72,6 +73,8 @@ public class RecorderActivity extends ActionBarActivity {
         LogUtil.i(MODULE_NAME, "event error_id:" + event.error_id);
         if (event.error_id == Constants.ErrorId.NO_ERROR) {
             showRecorderFragment();
+        } else {
+            showErrorFragment(event.error_id);
         }
     }
 
@@ -84,6 +87,13 @@ public class RecorderActivity extends ActionBarActivity {
 
     private void showRecorderFragment() {
         Fragment newFragment = new RecorderFragment();
+        FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
+        transaction.replace(R.id.fragment_container, newFragment);
+        transaction.commit();
+    }
+
+    private void showErrorFragment(int errorId) {
+        Fragment newFragment = ErrorFragment.newInstance(errorId);
         FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
         transaction.replace(R.id.fragment_container, newFragment);
         transaction.commit();
