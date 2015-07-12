@@ -81,7 +81,7 @@ public class StorageHelper {
         LogUtil.i(MUDULE_TAG, "updateStorageState state:" + state);
         if(state.equals(Environment.MEDIA_MOUNTED)) {
             mStorageAvailable = true;
-            mFolderPath = Environment.getExternalStorageDirectory().getPath() + "/" + FOLDER_NAME;
+            mFolderPath = System.getenv("EXTERNAL_STORAGE") + File.separator + FOLDER_NAME;
             LogUtil.i(MUDULE_TAG, "init mFolderPath:" + mFolderPath);
             File folder = new File(mFolderPath);
             if(!folder.exists()) folder.mkdirs();

@@ -5,8 +5,6 @@ import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.ActionBarActivity;
-import android.view.Menu;
-import android.view.MenuItem;
 
 import com.mindarc.screenrecorder.event.InitEvent;
 import com.mindarc.screenrecorder.fragment.ErrorFragment;
@@ -30,7 +28,6 @@ public class RecorderActivity extends ActionBarActivity {
         RecorderModel.getModel().init(this);
 
         StorageHelper.sStorageHelper.init(this);
-        StorageHelper.sStorageHelper.generateFileName();
         init();
 
         if (!RecorderModel.getModel().isInitialized()) {
@@ -47,6 +44,7 @@ public class RecorderActivity extends ActionBarActivity {
         EventBus.getDefault().unregister(this);
     }
 
+    /*
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
@@ -67,10 +65,11 @@ public class RecorderActivity extends ActionBarActivity {
         }
 
         return super.onOptionsItemSelected(item);
-    }
+    }*/
 
     public void onEvent(InitEvent event) {
         LogUtil.i(MODULE_NAME, "event error_id:" + event.error_id);
+        //event = new InitEvent(Constants.ErrorId.NOT_ROOTED);
         if (event.error_id == Constants.ErrorId.NO_ERROR) {
             showRecorderFragment();
         } else {

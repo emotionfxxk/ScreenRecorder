@@ -122,7 +122,7 @@ public class RecorderService extends Service implements ShellScreenRecorder.Stat
 
         // We want this service to continue running until it is explicitly
         // stopped, so return sticky.
-        return START_STICKY;
+        return START_NOT_STICKY;
     }
 
     private void setupNotification() {
