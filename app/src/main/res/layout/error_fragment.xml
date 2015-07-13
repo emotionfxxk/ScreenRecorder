@@ -15,6 +15,7 @@
             android:textSize="26sp"
             android:typeface="sans"
             android:textStyle="bold"
+            android:drawablePadding="16dp"
             android:drawableTop="@drawable/ic_error" />
     </RelativeLayout>
 </RelativeLayout>
