@@ -69,7 +69,7 @@ public class RecorderActivity extends ActionBarActivity {
 
     public void onEvent(InitEvent event) {
         LogUtil.i(MODULE_NAME, "event error_id:" + event.error_id);
-        event = new InitEvent(Constants.ErrorId.NOT_ROOTED);
+        //event = new InitEvent(Constants.ErrorId.NOT_ROOTED);
         if (event.error_id == Constants.ErrorId.NO_ERROR) {
             showRecorderFragment();
         } else {
