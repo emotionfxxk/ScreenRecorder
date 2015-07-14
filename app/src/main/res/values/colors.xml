@@ -10,4 +10,9 @@
     <color name="gplus_color_2">#f4b400</color>
     <color name="gplus_color_3">#427fed</color>
     <color name="gplus_color_4">#b23424</color>
+
+    <color name="shutter_white_normal">#ffffffff</color>
+    <color name="shutter_white_pressed">#ccffffff</color>
+    <color name="shutter_red">#fff44336</color>
+    <color name="shutter_red_pressed">#ccf44336</color>
 </resources>

@@ -7,7 +7,7 @@ import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
+import android.widget.CheckedTextView;
 
 import com.mindarc.screenrecorder.Constants;
 import com.mindarc.screenrecorder.R;
@@ -24,7 +24,7 @@ import de.greenrobot.event.EventBus;
  */
 public class RecorderFragment extends Fragment implements View.OnClickListener {
     private final static String MODULE_TAG = "RecorderFragment";
-    private Button mShutter;
+    private CheckedTextView mShutter;
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -36,7 +36,7 @@ public class RecorderFragment extends Fragment implements View.OnClickListener {
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         View rootView = inflater.inflate(R.layout.recorder_fragment, container, false);
-        mShutter = (Button) rootView.findViewById(R.id.shutter);
+        mShutter = (CheckedTextView) rootView.findViewById(R.id.shutter);
         mShutter.setOnClickListener(this);
         return rootView;
     }
@@ -59,15 +59,13 @@ public class RecorderFragment extends Fragment implements View.OnClickListener {
     public void onClick(View v) {
         boolean isRecording = RecorderModel.getModel().isRecorderRunning();
         LogUtil.i(MODULE_TAG, "onClick() isRecording=" + isRecording);
+        mShutter.toggle();
+        mShutter.setEnabled(false);
         if (!isRecording) {
-            mShutter.setText(R.string.shutter_starting);
-            mShutter.setEnabled(false);
             start_rec();
             getActivity().finish();
             EventBus.getDefault().unregister(this);
         } else {
-            mShutter.setText(R.string.shutter_stoping);
-            mShutter.setEnabled(false);
             stop_rec();
         }
     }
@@ -76,7 +74,7 @@ public class RecorderFragment extends Fragment implements View.OnClickListener {
         LogUtil.i(MODULE_TAG, "onEvent isRecording:" + event.isRecording +
             ", fileName:" + event.fileName);
         mShutter.setEnabled(true);
-        mShutter.setText(event.isRecording ? R.string.shutter_stop : R.string.shutter_start);
+        mShutter.setChecked(event.isRecording);
     }
 
     private void start_rec() {
