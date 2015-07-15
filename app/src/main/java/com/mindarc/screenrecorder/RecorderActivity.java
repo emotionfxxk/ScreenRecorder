@@ -4,6 +4,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
+import android.support.v7.app.ActionBar;
 import android.support.v7.app.ActionBarActivity;
 
 import com.mindarc.screenrecorder.event.InitEvent;
@@ -34,6 +35,17 @@ public class RecorderActivity extends ActionBarActivity {
             showInitFragment();
         } else {
             showRecorderFragment();
+        }
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        if (getSupportActionBar() != null) {
+            getSupportActionBar().setDisplayOptions(ActionBar.DISPLAY_SHOW_HOME |
+                    ActionBar.DISPLAY_SHOW_TITLE | ActionBar.DISPLAY_USE_LOGO);
+            //getSupportActionBar().
+            getSupportActionBar().setLogo(R.drawable.ic_logo);
         }
     }
 

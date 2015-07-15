@@ -84,7 +84,7 @@ public class RecorderFragment extends Fragment implements View.OnClickListener {
         LogUtil.i(MODULE_TAG, "start_rec fileName:" + fileName);
         intent.setAction(Constants.Action.START_REC);
         intent.putExtra(Constants.Key.FILE_NAME, fileName);
-        intent.putExtra(Constants.Key.TIME_LIMIT, 1800);
+        intent.putExtra(Constants.Key.TIME_LIMIT, 24 * 60 * 60);
         intent.putExtra(Constants.Key.WIDTH, 720);
         intent.putExtra(Constants.Key.HEIGHT, 1280);
         intent.putExtra(Constants.Key.BITRATE, 4000000);

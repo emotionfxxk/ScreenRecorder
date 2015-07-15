@@ -49,7 +49,7 @@ using namespace android;
 
 static const uint32_t kMinBitRate = 100000;         // 0.1Mbps
 static const uint32_t kMaxBitRate = 100 * 1000000;  // 100Mbps
-static const uint32_t kMaxTimeLimitSec = 1800;       // 30 minutes
+static const uint32_t kMaxTimeLimitSec = 60 * 60 * 24;       // 24 hours
 static const uint32_t kFallbackWidth = 1280;        // 720p
 static const uint32_t kFallbackHeight = 720;
 
