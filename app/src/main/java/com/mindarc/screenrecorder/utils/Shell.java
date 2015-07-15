@@ -1,7 +1,6 @@
 package com.mindarc.screenrecorder.utils;
 
 import java.io.BufferedReader;
-import java.io.DataOutputStream;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
@@ -29,31 +28,36 @@ public class Shell {
     }
 
     public static boolean requestRootPermission() {
-        Process p;
-        boolean rooted = false;
+        LogUtil.i(MODULE_TAG, "requestRootPermission");
+        int result = -1;
+        Runtime runtime = Runtime.getRuntime();
+        Process proc = null;
         try {
-            // Preform su to get root privilege
-            p = Runtime.getRuntime().exec("su");
-            // Attempt to write a file to a root-only
-            DataOutputStream os = new DataOutputStream(p.getOutputStream());
-            os.writeBytes("echo \"Do I have root?\" >/system/sd/temporary.txt\n");
-
-            // Close the terminal
-            os.writeBytes("exit\n");
-            os.flush();
-            try {
-                p.waitFor();
-                if (p.exitValue() != 255) {
-                    rooted = true;
-                }
-            } catch (InterruptedException e) {
-                e.printStackTrace();
-                LogUtil.e(MODULE_TAG, "exception while waitFor: " + e.getMessage());
+            proc = runtime.exec("su");
+            result = proc.waitFor();
+            StringBuilder successMsg = new StringBuilder();
+            StringBuilder errorMsg = new StringBuilder();
+            BufferedReader successResult = new BufferedReader(
+                    new InputStreamReader(proc.getInputStream()));
+            BufferedReader errorResult = new BufferedReader(
+                    new InputStreamReader(proc.getErrorStream()));
+            String s;
+            while ((s = successResult.readLine()) != null) {
+                successMsg.append(s);
             }
+            while ((s = errorResult.readLine()) != null) {
+                errorMsg.append(s);
+            }
+            LogUtil.i(MODULE_TAG, "result:" + result + ", successMsg:" + successMsg +
+                    ", errorMsg:" + errorMsg);
+            //return new Result(result, successMsg.toString(), errorMsg.toString());
         } catch (Exception e) {
             e.printStackTrace();
+            LogUtil.e(MODULE_TAG, "Command resulted in an IO Exception: " + e.getMessage());
+            //return new Result(result);
         }
-        return rooted;
+
+        return (result == 0);
     }
 
     public static Result execCommandAsSu(String command) {
@@ -103,9 +107,8 @@ public class Shell {
         LogUtil.i(MODULE_TAG, "execCommand: " + command);
         int result = -1;
         Runtime runtime = Runtime.getRuntime();
-        Process proc = null;
         try {
-            proc = runtime.exec("command");
+            Process proc = runtime.exec("command");
             result = proc.waitFor();
             StringBuilder successMsg = new StringBuilder();
             StringBuilder errorMsg = new StringBuilder();

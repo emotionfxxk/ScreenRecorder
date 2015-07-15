@@ -119,7 +119,7 @@ public class ShellScreenRecorder {
         } else if (old == Constants.State.RECORDING && s == Constants.State.FREE) {
             sHandler.sendMessage(sHandler.obtainMessage(_MESSAGE.ON_STOP_RECORDER, message));
         } else if (s == Constants.State.FAILED_TO_INIT) {
-            sHandler.sendEmptyMessage(_MESSAGE.ON_FAILED_TO_INIT);
+            sHandler.sendMessage(sHandler.obtainMessage(_MESSAGE.ON_FAILED_TO_INIT, errId, 0));
         }
     }
 
