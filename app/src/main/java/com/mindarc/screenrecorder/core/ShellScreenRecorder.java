@@ -161,19 +161,38 @@ public class ShellScreenRecorder {
             LogUtil.i(MUDULE_NAME, "stop: recorder is not running");
             return;
         }
-        Shell.Result res = Shell.execCommandAsSu("ps | grep " + FULL_PATH_OF_RECORD_COMMAND);
-        LogUtil.i(MUDULE_NAME, "res:" + res.errorMsg + "|" + res.succeedMsg + "|" + res.result);
-        if (res.succeedMsg != null && !res.succeedMsg.equals("")) {
-            String[] processInfo = res.succeedMsg.split("\\s+");
-            for (String info : processInfo) {
-                LogUtil.i(MUDULE_NAME, "info: [" + info + "]");
-            }
-            if (processInfo.length >= 2) {
-                LogUtil.i(MUDULE_NAME, "pid: [" + processInfo[1] + "]");
-                res = Shell.execCommandAsSu("kill -2 " + processInfo[1]);
-                LogUtil.i(MUDULE_NAME, "res:" + res.result);
-            }
+        int pid = getRecorderPid();
+        LogUtil.i(MUDULE_NAME, "pid:" + pid);
+        if (pid != -1) {
+            Shell.Result res = Shell.execCommandAsSu("kill -2 " + pid);
+            LogUtil.i(MUDULE_NAME, "res:" + res.result);
         }
+    }
+
+    /**
+     * Get process id of recorder binary
+     * Ps list column(default)
+     * USER PID PPID VSIZE RSS WCHAN PC NAME
+     * @return pid
+     */
+    private static int getRecorderPid() {
+        Shell.Result res = Shell.execCommandAsSu("ps");
+        try {
+            if (res.succeedMsg != null && !res.succeedMsg.equals("")) {
+                String[] processInfo = res.succeedMsg.split("\\s+");
+                int length = processInfo.length;
+                LogUtil.i(MUDULE_NAME, "getRecorderPid length:" + length);
+                for (int index = 0; index < length; ++index) {
+                    if (processInfo[index].startsWith(FULL_PATH_OF_RECORD_COMMAND)) {
+                        return Integer.valueOf(processInfo[index - 7]);
+                    }
+                }
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+            LogUtil.i(MUDULE_NAME, "getRecorderPid e:" + e.getMessage());
+        }
+        return -1;
     }
 
     private static class RecorderThread extends Thread {

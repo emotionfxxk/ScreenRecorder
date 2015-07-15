@@ -31,9 +31,13 @@ public class Shell {
         LogUtil.i(MODULE_TAG, "requestRootPermission");
         int result = -1;
         Runtime runtime = Runtime.getRuntime();
-        Process proc = null;
+        OutputStreamWriter osw = null;
         try {
-            proc = runtime.exec("su");
+            Process proc = runtime.exec("su");
+            osw = new OutputStreamWriter(proc.getOutputStream());
+            osw.write("exit\n");
+            osw.flush();
+            osw.close();
             result = proc.waitFor();
             StringBuilder successMsg = new StringBuilder();
             StringBuilder errorMsg = new StringBuilder();
@@ -55,6 +59,13 @@ public class Shell {
             e.printStackTrace();
             LogUtil.e(MODULE_TAG, "Command resulted in an IO Exception: " + e.getMessage());
             //return new Result(result);
+        } finally {
+            if (osw != null) {
+                try {
+                    osw.close();
+                }
+                catch (IOException e){}
+            }
         }
 
         return (result == 0);
