@@ -7,4 +7,6 @@
 
     <string name="abi_not_supported">Phone not supported!</string>
     <string name="not_rooted">Phone not Rooted!</string>
+
+    <string name="pref_resolution">Video Resolution</string>
 </resources>

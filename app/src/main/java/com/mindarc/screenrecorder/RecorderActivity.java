@@ -86,27 +86,32 @@ public class RecorderActivity extends ActionBarActivity {
             showRecorderFragment();
         } else {
             showErrorFragment(event.error_id);
+            hideRecorderFragment();
+        }
+    }
+
+    private void hideRecorderFragment() {
+        Fragment recFragment = getSupportFragmentManager().findFragmentByTag(RecorderFragment.class.getName());
+        if (recFragment != null) {
+            getSupportFragmentManager().beginTransaction().remove(recFragment).commit();
         }
     }
 
     private void showInitFragment() {
-        Fragment newFragment = new InitFragment();
         FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
-        transaction.replace(R.id.fragment_container, newFragment);
+        transaction.replace(R.id.content_container, new InitFragment(), InitFragment.class.getName());
         transaction.commit();
     }
 
     private void showRecorderFragment() {
-        Fragment newFragment = new RecorderFragment();
         FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
-        transaction.replace(R.id.fragment_container, newFragment);
+        transaction.replace(R.id.content_container, new RecorderFragment(), RecorderFragment.class.getName());
         transaction.commit();
     }
 
     private void showErrorFragment(int errorId) {
-        Fragment newFragment = ErrorFragment.newInstance(errorId);
         FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
-        transaction.replace(R.id.fragment_container, newFragment);
+        transaction.replace(R.id.content_container, ErrorFragment.newInstance(errorId), ErrorFragment.class.getName());
         transaction.commit();
     }
 
@@ -116,6 +121,4 @@ public class RecorderActivity extends ActionBarActivity {
         intent.setAction(Constants.Action.INIT);
         startService(intent);
     }
-
-
 }
