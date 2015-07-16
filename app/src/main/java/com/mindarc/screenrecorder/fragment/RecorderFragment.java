@@ -33,6 +33,7 @@ public class RecorderFragment extends Fragment implements View.OnClickListener {
     private final static String MODULE_TAG = "RecorderFragment";
     private CheckedTextView mShutter;
     private ExpandableListView mSettings;
+    private SettingAdapter mAdapter;
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -47,7 +48,19 @@ public class RecorderFragment extends Fragment implements View.OnClickListener {
         mShutter = (CheckedTextView) rootView.findViewById(R.id.shutter);
         mShutter.setOnClickListener(this);
         mSettings = (ExpandableListView) rootView.findViewById(R.id.settings);
-        mSettings.setAdapter(new SettingAdapter(getActivity()));
+        mAdapter = new SettingAdapter(getActivity());
+        mSettings.setAdapter(mAdapter);
+        mSettings.setOnGroupExpandListener(new ExpandableListView.OnGroupExpandListener() {
+            @Override
+            public void onGroupExpand(int groupPosition) {
+                int groupCount = mAdapter.getGroupCount();
+                for (int i = 0; i < groupCount; ++i) {
+                    if (i != groupPosition) {
+                        mSettings.collapseGroup(i);
+                    }
+                }
+            }
+        });
         return rootView;
     }
 

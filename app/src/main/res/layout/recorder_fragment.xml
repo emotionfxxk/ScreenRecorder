@@ -6,7 +6,7 @@
         android:id="@+id/settings"
         android:layout_height="match_parent"
         android:layout_width="match_parent"
-        android:dividerHeight="8dp"/>
+        android:childDivider="@drawable/item_divider" />
     <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
