@@ -1,14 +1,25 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:id="@+id/compress_button_layout"
     android:layout_width="match_parent"
-    android:layout_height="match_parent" >
-    <CheckedTextView
-        android:id="@+id/shutter"
-        android:layout_height="72dp"
-        android:layout_width="72dp"
+    android:layout_height="match_parent">
+    <ExpandableListView
+        android:id="@+id/settings"
+        android:layout_height="match_parent"
+        android:layout_width="match_parent"
+        android:dividerHeight="8dp"/>
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
         android:layout_alignParentBottom="true"
-        android:layout_marginBottom="16dp"
-        android:layout_centerHorizontal="true"
-        android:background="@drawable/shutter"
-        android:clickable="true" />
+        android:paddingTop="8dp"
+        android:paddingBottom="8dp"
+        android:background="@drawable/bottom_bar">
+        <CheckedTextView
+            android:id="@+id/shutter"
+            android:layout_height="72dp"
+            android:layout_width="72dp"
+            android:layout_centerHorizontal="true"
+            android:background="@drawable/shutter"
+            android:clickable="true" />
+    </RelativeLayout>
 </RelativeLayout>

@@ -1,6 +1,7 @@
 package com.mindarc.screenrecorder;
 
 import android.content.Intent;
+import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
@@ -46,6 +47,8 @@ public class RecorderActivity extends ActionBarActivity {
                     ActionBar.DISPLAY_SHOW_TITLE | ActionBar.DISPLAY_USE_LOGO);
             //getSupportActionBar().
             getSupportActionBar().setLogo(R.drawable.ic_logo);
+            getSupportActionBar().setBackgroundDrawable(
+                    new ColorDrawable(getResources().getColor(R.color.color_main)));
         }
     }
 

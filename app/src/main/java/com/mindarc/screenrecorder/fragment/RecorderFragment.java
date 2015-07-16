@@ -8,6 +8,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.CheckedTextView;
+import android.widget.ExpandableListView;
 
 import com.mindarc.screenrecorder.Constants;
 import com.mindarc.screenrecorder.R;
@@ -21,10 +22,17 @@ import de.greenrobot.event.EventBus;
 
 /**
  * Created by sean on 7/10/15.
+ * TODO: Add recorder setting here
+ * 1. Resolution: phone resolution(default), 720P, 1080P
+ * 2. Bitrate: 720P {2M(default network), 2.5M(normal), 3M(HQ)}
+ * 1080P {4M(default network), 5M(normal), 7.5M(HQ)}
+ * 3. Orientation:portrait(default), landscape(gaming)
+ * 4. Default name(data), or rename manually
  */
 public class RecorderFragment extends Fragment implements View.OnClickListener {
     private final static String MODULE_TAG = "RecorderFragment";
     private CheckedTextView mShutter;
+    private ExpandableListView mSettings;
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -38,6 +46,8 @@ public class RecorderFragment extends Fragment implements View.OnClickListener {
         View rootView = inflater.inflate(R.layout.recorder_fragment, container, false);
         mShutter = (CheckedTextView) rootView.findViewById(R.id.shutter);
         mShutter.setOnClickListener(this);
+        mSettings = (ExpandableListView) rootView.findViewById(R.id.settings);
+        mSettings.setAdapter(new SettingAdapter(getActivity()));
         return rootView;
     }
 

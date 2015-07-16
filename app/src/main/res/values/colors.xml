@@ -15,4 +15,11 @@
     <color name="shutter_white_pressed">#ccffffff</color>
     <color name="shutter_red">#fff44336</color>
     <color name="shutter_red_pressed">#ccf44336</color>
+
+
+    <color name="color_main">#000000</color>
+    <color name="color_content_bg">#212121</color>
+    <color name="color_light">#616161</color>
+    <color name="color_dark">#424242</color>
+
 </resources>
