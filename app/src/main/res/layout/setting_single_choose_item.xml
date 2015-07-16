@@ -11,13 +11,13 @@
         android:layout_alignParentLeft="true"
         android:layout_centerVertical="true"
         android:textColor="@android:color/white"
-        android:textSize="21sp"
-        android:layout_marginLeft="8dp"/>
+        android:textSize="18sp"
+        android:layout_marginLeft="16dp"/>
     <CheckBox
         android:id="@+id/checked"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignParentRight="true"
         android:layout_centerVertical="true"
-        android:layout_marginRight="8dp" />
+        android:layout_marginRight="16dp" />
 </RelativeLayout>

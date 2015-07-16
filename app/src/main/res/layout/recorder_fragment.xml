@@ -6,7 +6,13 @@
         android:id="@+id/settings"
         android:layout_height="match_parent"
         android:layout_width="match_parent"
-        android:childDivider="@drawable/item_divider" />
+        android:dividerHeight="0dp"
+        android:paddingLeft="8dp"
+        android:paddingRight="8dp"
+        android:scrollbars="none"
+        android:fadingEdge="none"
+        android:groupIndicator="@null"
+        android:listSelector="@drawable/list_selector" />
     <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
