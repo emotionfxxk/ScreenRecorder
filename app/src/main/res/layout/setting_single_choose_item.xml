@@ -4,32 +4,16 @@
     android:layout_height="wrap_content"
     android:minHeight="56dp"
     android:background="@color/color_dark">
-    <TextView
-        android:id="@+id/value_title_left"
-        android:layout_width="240dp"
+    <CheckedTextView
+        android:id="@+id/vaule"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:gravity="center"
         android:layout_alignParentLeft="true"
         android:layout_centerVertical="true"
-        android:textColor="@android:color/white"
+        android:textColor="@drawable/item_text_color"
         android:textSize="18sp"
         android:singleLine="true"
         android:ellipsize="start"
-        android:layout_marginLeft="16dp"/>
-    <TextView
-        android:id="@+id/value_center"
-        android:layout_width="120dp"
-        android:layout_height="wrap_content"
-        android:layout_centerInParent="true"
-        android:singleLine="true"
-        android:ellipsize="start"
-        android:textColor="@android:color/white"
-        android:textSize="18sp"
-        android:layout_marginLeft="16dp"/>
-    <RadioButton
-        android:id="@+id/checked"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignParentRight="true"
-        android:layout_centerVertical="true"
-        android:layout_marginRight="16dp" />
+        android:checkMark="@null" />
 </RelativeLayout>

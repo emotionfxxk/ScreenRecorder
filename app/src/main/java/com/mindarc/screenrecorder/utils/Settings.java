@@ -72,6 +72,7 @@ public class Settings {
         checkState();
         mChosenResIndex = index;
         mSettingsPref.edit().putString(Keys.RESOLUTION, mAvailResList.get(index)).commit();
+        reloadBitrate();
     }
 
     public boolean isRotate() {
@@ -138,8 +139,32 @@ public class Settings {
             }
         }
 
+        reloadBitrate();
+
+        mIsRotate = mSettingsPref.getBoolean(Keys.ROTATE, false);
+        editor.putBoolean(Keys.ROTATE, mIsRotate);
+
+        editor.commit();
+        mInit = true;
+
+        StringBuilder sb = new StringBuilder();
+        sb.append("mChosenResIndex:").append(mChosenResIndex)
+                .append(", res:").append(mAvailResList.get(mChosenResIndex))
+                .append(", bitrate name:").append(mBitrateName[mChosenBitrateIndex])
+                .append(", bitrate:").append(mAvailBitrates[mChosenBitrateIndex])
+                .append(", rotate:").append(mIsRotate);
+        LogUtil.i(TAG, "after loading:" + sb.toString());
+    }
+
+    private void reloadBitrate() {
+        SharedPreferences.Editor editor = mSettingsPref.edit();
+        String choosedRes = mAvailResList.get(mChosenResIndex);
+        String[] wh = choosedRes.split("x");
+        int w = Integer.valueOf(wh[0]);
+        int h = Integer.valueOf(wh[1]);
+
         mBitrateName = mAppCtx.getResources().getStringArray(R.array.bitrate_level_name);
-        if (screenSize.x >= 1080 && screenSize.y >= 1920) {
+        if (w >= 1080 && h >= 1920) {
             mAvailBitrates = mAppCtx.getResources().getIntArray(R.array.fullhd_bitrate);
         } else {
             mAvailBitrates = mAppCtx.getResources().getIntArray(R.array.hd_bitrate);
@@ -159,22 +184,8 @@ public class Settings {
                 }
             }
         }
-
-        mIsRotate = mSettingsPref.getBoolean(Keys.ROTATE, false);
-        editor.putBoolean(Keys.ROTATE, mIsRotate);
-
         editor.commit();
-        mInit = true;
-
-        StringBuilder sb = new StringBuilder();
-        sb.append("mChosenResIndex:").append(mChosenResIndex)
-                .append(", res:").append(mAvailResList.get(mChosenResIndex))
-                .append(", bitrate name:").append(mBitrateName[mChosenBitrateIndex])
-                .append(", bitrate:").append(mAvailBitrates[mChosenBitrateIndex])
-                .append(", rotate:").append(mIsRotate);
-        LogUtil.i(TAG, "after loading:" + sb.toString());
     }
-
 
     private void checkState() {
         if (!mInit) throw new IllegalStateException("Not initialized!!!");

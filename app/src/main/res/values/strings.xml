@@ -11,8 +11,6 @@
     <string name="resolution">Resolution</string>
     <string name="bitrate">Bitrate</string>
     <string name="rotation">Rotation</string>
-    <string name="file_name">File Name</string>
-    <string name="default_name">Auto</string>
 
     <string name="orien_portrait">Portrait</string>
     <string name="orien_landscape">Landscape</string>
