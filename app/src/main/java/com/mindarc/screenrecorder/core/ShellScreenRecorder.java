@@ -9,6 +9,7 @@ import android.os.Process;
 import com.mindarc.screenrecorder.Constants;
 import com.mindarc.screenrecorder.utils.AssetsHelper;
 import com.mindarc.screenrecorder.utils.LogUtil;
+import com.mindarc.screenrecorder.utils.Settings;
 import com.mindarc.screenrecorder.utils.Shell;
 
 import java.io.File;
@@ -202,11 +203,11 @@ public class ShellScreenRecorder {
         public RecorderThread(String fileName, int width, int height,
                               int bitRate, int timeLimit, boolean rotate) {
             mFileName = fileName;
-            mWidth = (width <= 0 || height <= 0) ? Profile.FALLBACK_WIDTH : width;
-            mHeight = (width <= 0 || height <= 0) ? Profile.FALLBACK_HEIGHT : height;
+            mWidth = (width <= 0 || height <= 0) ? Settings.FALLBACK_WIDTH : width;
+            mHeight = (width <= 0 || height <= 0) ? Settings.FALLBACK_HEIGHT : height;
 
-            mBitrate = (bitRate > 0) ? bitRate : Profile.FALLBACK_BITRATE;
-            mTimelimit = (timeLimit <= 0 || timeLimit > Profile.MAX_TIME_LIMIT) ? Profile.MAX_TIME_LIMIT : timeLimit;
+            mBitrate = (bitRate > 0) ? bitRate : Settings.FALLBACK_BITRATE;
+            mTimelimit = (timeLimit <= 0 || timeLimit > Settings.MAX_TIME_LIMIT) ? Settings.MAX_TIME_LIMIT : timeLimit;
             mRotate = rotate;
         }
         @Override

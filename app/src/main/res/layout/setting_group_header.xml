@@ -16,6 +16,8 @@
             android:layout_height="wrap_content"
             android:layout_alignParentLeft="true"
             android:layout_centerVertical="true"
+            android:singleLine="true"
+            android:ellipsize="start"
             android:textColor="@android:color/white"
             android:textSize="21sp"
             android:layout_marginLeft="16dp"/>
@@ -23,6 +25,10 @@
             android:id="@+id/group_title_center"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:textColor="@android:color/white"
+            android:singleLine="true"
+            android:ellipsize="start"
+            android:textSize="21sp"
             android:layout_centerInParent="true"/>
         <TextView
             android:id="@+id/subtitle"
@@ -31,6 +37,7 @@
             android:layout_alignParentRight="true"
             android:layout_centerVertical="true"
             android:layout_marginRight="16dp"
+            android:singleLine="true"
             android:textColor="#64B5F6"
             android:textSize="16sp"
             android:typeface="sans" />

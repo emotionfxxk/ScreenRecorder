@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string-array name="bitrate_level_name">
+        <item>Network</item>
+        <item>Normal</item>
+        <item>High Quality</item>
+    </string-array>
+    <integer-array name="hd_bitrate">
+        <item>2097152</item>
+        <item>2621440</item>
+        <item>3145728</item>
+    </integer-array>
+    <integer-array name="fullhd_bitrate">
+        <item>4194304</item>
+        <item>5242880</item>
+        <item>7864320</item>
+    </integer-array>
+</resources>

@@ -8,7 +8,7 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.os.IBinder;
 
-import com.mindarc.screenrecorder.core.Profile;
+import com.mindarc.screenrecorder.utils.Settings;
 import com.mindarc.screenrecorder.core.ShellScreenRecorder;
 import com.mindarc.screenrecorder.utils.LogUtil;
 
@@ -105,11 +105,11 @@ public class RecorderService extends Service implements ShellScreenRecorder.Stat
                 }
             } else if (action.equals(Constants.Action.START_REC)) {
                 String fileName = intent.getStringExtra(Constants.Key.FILE_NAME);
-                int timeLimit = intent.getIntExtra(Constants.Key.TIME_LIMIT, Profile.MAX_TIME_LIMIT);
-                int width = intent.getIntExtra(Constants.Key.WIDTH, Profile.FALLBACK_WIDTH);
-                int height = intent.getIntExtra(Constants.Key.HEIGHT, Profile.FALLBACK_HEIGHT);
-                int bitrate = intent.getIntExtra(Constants.Key.BITRATE, Profile.FALLBACK_BITRATE);
-                boolean rotate = intent.getBooleanExtra(Constants.Key.ROTATE, Profile.FULLBACK_ROTATE);
+                int timeLimit = intent.getIntExtra(Constants.Key.TIME_LIMIT, Settings.MAX_TIME_LIMIT);
+                int width = intent.getIntExtra(Constants.Key.WIDTH, Settings.FALLBACK_WIDTH);
+                int height = intent.getIntExtra(Constants.Key.HEIGHT, Settings.FALLBACK_HEIGHT);
+                int bitrate = intent.getIntExtra(Constants.Key.BITRATE, Settings.FALLBACK_BITRATE);
+                boolean rotate = intent.getBooleanExtra(Constants.Key.ROTATE, Settings.FULLBACK_ROTATE);
                 ShellScreenRecorder.start(fileName, width, height, bitrate, timeLimit, rotate);
 
                 // setup notification

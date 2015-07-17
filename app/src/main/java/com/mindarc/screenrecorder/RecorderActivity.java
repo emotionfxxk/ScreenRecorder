@@ -13,6 +13,7 @@ import com.mindarc.screenrecorder.fragment.ErrorFragment;
 import com.mindarc.screenrecorder.fragment.InitFragment;
 import com.mindarc.screenrecorder.fragment.RecorderFragment;
 import com.mindarc.screenrecorder.utils.LogUtil;
+import com.mindarc.screenrecorder.utils.Settings;
 import com.mindarc.screenrecorder.utils.StorageHelper;
 
 import de.greenrobot.event.EventBus;
@@ -28,8 +29,8 @@ public class RecorderActivity extends ActionBarActivity {
 
         EventBus.getDefault().register(this);
         RecorderModel.getModel().init(this);
-
         StorageHelper.sStorageHelper.init(this);
+        Settings.instance().init(this);
         init();
 
         if (!RecorderModel.getModel().isInitialized()) {

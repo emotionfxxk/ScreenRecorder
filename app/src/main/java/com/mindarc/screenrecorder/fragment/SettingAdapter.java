@@ -1,21 +1,26 @@
 package com.mindarc.screenrecorder.fragment;
 
 import android.content.Context;
-import android.graphics.Typeface;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseExpandableListAdapter;
-import android.widget.CheckBox;
+import android.widget.RadioButton;
 import android.widget.TextView;
 
 import com.mindarc.screenrecorder.R;
+import com.mindarc.screenrecorder.utils.Settings;
+import com.mindarc.screenrecorder.utils.StorageHelper;
+
+import java.util.ArrayList;
+import android.text.format.Formatter;
 
 /**
  * Created by sean on 7/16/15.
  */
 public class SettingAdapter extends BaseExpandableListAdapter {
     private Context mContext;
+    private String mFileName;
 
     public static class GroupHeader {
         public String mTitle;
@@ -26,51 +31,58 @@ public class SettingAdapter extends BaseExpandableListAdapter {
         }
     }
 
-    public static class Value {
-        public String mValue;
-        public boolean mSelected;
-        public Value(String value, boolean selected) {
-            mSelected = selected;
-            mValue = value;
-        }
-    }
-
-
-    private GroupHeader[] mHeaders = new GroupHeader[] {
-            new GroupHeader("Resolution", "1280x720"),
-            new GroupHeader("Bitrate", "1.5M"),
-            new GroupHeader("Orientation", "Portrait"),
-            new GroupHeader("Name", "1984.12.12.mp4"),
-    };
-
-    private Value[] mValues = new Value[] {
-        new Value("1280x720", true),
-        new Value("1920x1080", false),
-        new Value("640x360", false),
-    };
+    private ArrayList<GroupHeader> mHeaders;
 
     public SettingAdapter(Context ctx) {
         mContext = ctx;
+        init();
+    }
+
+    private void init() {
+        mHeaders = new ArrayList<GroupHeader>();
+        Settings settings = Settings.instance();
+        mFileName = StorageHelper.sStorageHelper.generateFileName();
+        mHeaders.add(new GroupHeader(mContext.getString(R.string.resolution),
+                settings.getChosenRes()));
+        mHeaders.add(new GroupHeader(mContext.getString(R.string.bitrate),
+                Formatter.formatShortFileSize(mContext, settings.getChoosedBitrate())));
+        mHeaders.add(new GroupHeader(mContext.getString(R.string.rotation),
+                settings.isRotate() ? mContext.getString(android.R.string.yes) :
+                        mContext.getString(android.R.string.no)));
+        mHeaders.add(new GroupHeader(mContext.getString(R.string.file_name), mContext.getString(R.string.default_name)));
     }
 
     @Override
     public int getGroupCount() {
-        return mHeaders.length;
+        return mHeaders.size();
     }
 
     @Override
     public int getChildrenCount(int groupPosition) {
-        return mValues.length;
+        int childCount = 0;
+        switch (groupPosition) {
+            case 0:
+                childCount = Settings.instance().getAvailResList().size();
+                break;
+            case 1:
+                childCount = Settings.instance().getBitrates().length;
+                break;
+            case 2:
+            case 3:
+                childCount = 1;
+                break;
+        }
+        return childCount;
     }
 
     @Override
     public Object getGroup(int groupPosition) {
-        return mHeaders[groupPosition];
+        return mHeaders.get(groupPosition);
     }
 
     @Override
     public Object getChild(int groupPosition, int childPosition) {
-        return mValues[childPosition];
+        return null;
     }
 
     @Override
@@ -110,19 +122,29 @@ public class SettingAdapter extends BaseExpandableListAdapter {
 
     @Override
     public View getChildView(int groupPosition, int childPosition, boolean isLastChild, View convertView, ViewGroup parent) {
-        Value value = (Value) getChild(groupPosition, childPosition);
         if (convertView == null) {
             LayoutInflater infalInflater = (LayoutInflater) mContext
                     .getSystemService(Context.LAYOUT_INFLATER_SERVICE);
             convertView = infalInflater.inflate(R.layout.setting_single_choose_item, null);
         }
 
+        String value = null;
+        if (groupPosition == 0) {
+            value = Settings.instance().getAvailResList().get(childPosition);
+        } else if(groupPosition == 1) {
+            value = Formatter.formatShortFileSize(mContext, Settings.instance().getBitrates()[childPosition]);
+        } else if(groupPosition == 2) {
+            value = Settings.instance().isRotate() ? mContext.getString(android.R.string.yes) :
+                    mContext.getString(android.R.string.no);
+        } else {
+            value = mFileName;
+        }
         TextView titleLeft = (TextView) convertView
                 .findViewById(R.id.value_title_left);
-        titleLeft.setText(value.mValue);
+        titleLeft.setText(value);
 
-        CheckBox cb = (CheckBox) convertView.findViewById(R.id.checked);
-        cb.setChecked(value.mSelected);
+        //RadioButton cb = (RadioButton) convertView.findViewById(R.id.checked);
+        //cb.setChecked(value.mSelected);
         return convertView;
     }
 
