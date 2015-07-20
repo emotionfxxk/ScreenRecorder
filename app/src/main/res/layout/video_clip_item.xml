@@ -20,10 +20,9 @@
         android:paddingTop="2dp"
         android:paddingBottom="2dp"
         android:background="#7F000000"/>
-    <ImageView
+    <View
         android:layout_width="36dp"
         android:layout_height="36dp"
         android:layout_centerInParent="true"
-        android:scaleType="centerInside"
-        android:src="@drawable/ic_play_circle_24dp" />
+        android:background="@drawable/play"/>
 </RelativeLayout>

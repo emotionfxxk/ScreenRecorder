@@ -3,7 +3,7 @@
     <dimen name="activity_horizontal_margin">16dp</dimen>
     <dimen name="activity_vertical_margin">16dp</dimen>
     <dimen name="grid_horizontal_margin">8dp</dimen>
-    <dimen name="grid_cell_space_margin">2dp</dimen>
+    <dimen name="grid_cell_space_margin">3dp</dimen>
     <dimen name="shutter_vertical_padding">8dp</dimen>
     <dimen name="shutter_size">72dp</dimen>
 </resources>
