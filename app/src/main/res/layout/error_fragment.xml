@@ -12,10 +12,9 @@
             android:textColor="@android:color/white"
             android:padding="16dp"
             android:gravity="center"
-            android:textSize="26sp"
+            android:textSize="18sp"
             android:typeface="sans"
-            android:textStyle="bold"
             android:drawablePadding="16dp"
-            android:drawableTop="@drawable/ic_error" />
+            android:drawableTop="@drawable/ic_error_outline_white_48dp" />
     </RelativeLayout>
 </RelativeLayout>
