@@ -3,7 +3,10 @@ package com.mindarc.screenrecorder.fragment;
 import android.app.Activity;
 import android.content.Intent;
 import android.content.res.Resources;
+import android.database.Cursor;
+import android.net.Uri;
 import android.os.Bundle;
+import android.provider.MediaStore;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -72,6 +75,25 @@ public class RecorderFragment extends Fragment implements View.OnClickListener {
         mClipsAdapter = new ClipsAdapter(getActivity().getApplicationContext(),
                 StorageHelper.sStorageHelper.getVideoClips());
         mClips = (GridViewWithHeaderAndFooter) rootView.findViewById(R.id.clips);
+        mClips.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                LogUtil.i(MODULE_TAG, "position:" + position);
+                Cursor cursor = mClipsAdapter.getCursor();
+                LogUtil.i(MODULE_TAG, "cursor:" + cursor);
+                if (cursor != null) {
+                    cursor.moveToFirst();
+                    if (cursor.move(position)) {
+                        int columnIndex = cursor.getColumnIndex(MediaStore.Video.Media._ID);
+                        long mediaId = cursor.getLong(columnIndex);
+                        Uri uri = Uri.withAppendedPath(MediaStore.Video.Media.EXTERNAL_CONTENT_URI, Long.toString(mediaId));
+                        Intent intent = new Intent(Intent.ACTION_VIEW, uri);
+                        intent.setDataAndType(uri, "video/mp4");
+                        startActivity(intent);
+                    }
+                }
+            }
+        });
 
         Resources res = getActivity().getResources();
         View header = new View(getActivity());

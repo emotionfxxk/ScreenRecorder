@@ -22,4 +22,5 @@
     <color name="color_light">#616161</color>
     <color name="color_dark">#424242</color>
 
+    <color name="half_trans_dark">#7F000000</color>
 </resources>
