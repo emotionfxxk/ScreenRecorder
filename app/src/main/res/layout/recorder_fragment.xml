@@ -3,6 +3,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent">
     <ExpandableListView
+        android:visibility="gone"
         android:id="@+id/settings"
         android:layout_height="match_parent"
         android:layout_width="match_parent"
