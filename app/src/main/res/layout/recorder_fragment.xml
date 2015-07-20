@@ -22,6 +22,7 @@
         android:horizontalSpacing="@dimen/grid_cell_space_margin"
         android:gravity="center"
         android:numColumns="3"
+        android:drawSelectorOnTop="true"
         android:layout_marginLeft="@dimen/grid_horizontal_margin"
         android:layout_marginRight="@dimen/grid_horizontal_margin"/>
     <RelativeLayout
