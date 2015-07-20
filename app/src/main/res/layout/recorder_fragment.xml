@@ -14,17 +14,27 @@
         android:fadingEdge="none"
         android:groupIndicator="@null"
         android:listSelector="@drawable/list_selector" />
+    <in.srain.cube.views.GridViewWithHeaderAndFooter
+        android:id="@+id/clips"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:verticalSpacing="@dimen/grid_cell_space_margin"
+        android:horizontalSpacing="@dimen/grid_cell_space_margin"
+        android:gravity="center"
+        android:numColumns="3"
+        android:layout_marginLeft="@dimen/grid_horizontal_margin"
+        android:layout_marginRight="@dimen/grid_horizontal_margin"/>
     <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_alignParentBottom="true"
-        android:paddingTop="8dp"
-        android:paddingBottom="8dp"
+        android:paddingTop="@dimen/shutter_vertical_padding"
+        android:paddingBottom="@dimen/shutter_vertical_padding"
         android:background="@drawable/bottom_bar">
         <CheckedTextView
             android:id="@+id/shutter"
-            android:layout_height="72dp"
-            android:layout_width="72dp"
+            android:layout_height="@dimen/shutter_size"
+            android:layout_width="@dimen/shutter_size"
             android:layout_centerHorizontal="true"
             android:background="@drawable/shutter"
             android:clickable="true" />

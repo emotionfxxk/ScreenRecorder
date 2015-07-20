@@ -41,4 +41,5 @@ dependencies {
     compile 'com.android.support:recyclerview-v7:22.2.0'
     compile 'com.github.castorflex.smoothprogressbar:library-circular:1.0.1'
     compile 'de.greenrobot:eventbus:2.4.0'
+    compile 'in.srain.cube:grid-view-with-header-footer:1.0.12'
 }

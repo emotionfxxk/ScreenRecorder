@@ -2,6 +2,7 @@ package com.mindarc.screenrecorder.fragment;
 
 import android.app.Activity;
 import android.content.Intent;
+import android.content.res.Resources;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
@@ -10,6 +11,7 @@ import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.CheckedTextView;
 import android.widget.ExpandableListView;
+import android.widget.GridView;
 
 import com.mindarc.screenrecorder.Constants;
 import com.mindarc.screenrecorder.R;
@@ -21,6 +23,7 @@ import com.mindarc.screenrecorder.utils.Settings;
 import com.mindarc.screenrecorder.utils.StorageHelper;
 
 import de.greenrobot.event.EventBus;
+import in.srain.cube.views.GridViewWithHeaderAndFooter;
 
 /**
  * Created by sean on 7/10/15.
@@ -36,6 +39,9 @@ public class RecorderFragment extends Fragment implements View.OnClickListener {
     private CheckedTextView mShutter;
     private ExpandableListView mSettings;
     private SettingAdapter mAdapter;
+    private ClipsAdapter mClipsAdapter;
+
+    private GridViewWithHeaderAndFooter mClips;
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -63,6 +69,25 @@ public class RecorderFragment extends Fragment implements View.OnClickListener {
                 }
             }
         });
+        mClipsAdapter = new ClipsAdapter(getActivity().getApplicationContext(),
+                StorageHelper.sStorageHelper.getVideoClips());
+        mClips = (GridViewWithHeaderAndFooter) rootView.findViewById(R.id.clips);
+
+        Resources res = getActivity().getResources();
+        View header = new View(getActivity());
+        header.setLayoutParams(new ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT,
+                res.getDimensionPixelSize(R.dimen.grid_horizontal_margin)));
+
+
+        int placeHolderHeight = res.getDimensionPixelSize(R.dimen.shutter_vertical_padding) +
+                res.getDimensionPixelSize(R.dimen.shutter_size);
+        View footer = new View(getActivity());
+        footer.setLayoutParams(new ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT,
+                placeHolderHeight));
+
+        mClips.addHeaderView(header);
+        mClips.addFooterView(footer);
+        mClips.setAdapter(mClipsAdapter);
 
         mSettings.setOnChildClickListener(mAdapter);
         return rootView;

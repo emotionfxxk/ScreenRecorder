@@ -53,6 +53,10 @@ public class StorageHelper {
         }
     }
 
+    public Cursor getVideoClips() {
+        return mCursor;
+    }
+
     public final synchronized boolean isAvailable() {
         return mIsInit && mStorageAvailable;
     }
