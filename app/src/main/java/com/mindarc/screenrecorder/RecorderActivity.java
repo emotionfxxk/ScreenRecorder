@@ -62,6 +62,7 @@ public class RecorderActivity extends ActionBarActivity {
         EventBus.getDefault().unregister(this);
     }
 
+    /*
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
@@ -82,7 +83,7 @@ public class RecorderActivity extends ActionBarActivity {
         }
 
         return super.onOptionsItemSelected(item);
-    }
+    }*/
 
     public void onEvent(InitEvent event) {
         LogUtil.i(MODULE_NAME, "event error_id:" + event.error_id);
