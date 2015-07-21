@@ -7,57 +7,72 @@
     android:layout_above="@id/shutter_group"
     android:orientation="horizontal" >
     <LinearLayout
+        android:id="@+id/bitrate_menu"
         android:layout_width="0dp"
-        android:layout_height="wrap_content"
+        android:layout_height="match_parent"
         android:layout_weight="1"
         android:layout_gravity="center_vertical"
-        android:orientation="vertical">
+        android:orientation="vertical"
+        android:clickable="true"
+        android:background="@drawable/setting_menu_item">
         <TextView
             style="@style/menu_item_title"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
+            android:layout_height="0dp"
+            android:layout_weight="1"
             android:text="@string/setting_menu_bitrate" />
         <TextView
             style="@style/menu_item_value"
             android:id="@+id/bitrate_value"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
+            android:layout_height="0dp"
+            android:layout_weight="1"
             android:text="4M" />
     </LinearLayout>
     <LinearLayout
+        android:id="@+id/resolution_menu"
         android:layout_width="0dp"
-        android:layout_height="wrap_content"
+        android:layout_height="match_parent"
         android:layout_weight="1"
         android:layout_gravity="center_vertical"
-        android:orientation="vertical">
+        android:orientation="vertical"
+        android:clickable="true"
+        android:background="@drawable/setting_menu_item">
         <TextView
             style="@style/menu_item_title"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
+            android:layout_height="0dp"
+            android:layout_weight="1"
             android:text="@string/setting_menu_resolution" />
         <TextView
             style="@style/menu_item_value"
             android:id="@+id/resolution_value"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
+            android:layout_height="0dp"
+            android:layout_weight="1"
             android:text="1920x1080" />
     </LinearLayout>
     <LinearLayout
+        android:id="@+id/rotate_menu"
         android:layout_width="0dp"
-        android:layout_height="wrap_content"
+        android:layout_height="match_parent"
         android:layout_weight="1"
         android:layout_gravity="center_vertical"
-        android:orientation="vertical">
+        android:orientation="vertical"
+        android:clickable="true"
+        android:background="@drawable/setting_menu_item">
         <TextView
             style="@style/menu_item_title"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
+            android:layout_height="0dp"
+            android:layout_weight="1"
             android:text="@string/setting_menu_rotate" />
         <TextView
             style="@style/menu_item_value"
             android:id="@+id/rotate_value"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
+            android:layout_height="0dp"
+            android:layout_weight="1"
             android:text="OFF" />
     </LinearLayout>
 </LinearLayout>
