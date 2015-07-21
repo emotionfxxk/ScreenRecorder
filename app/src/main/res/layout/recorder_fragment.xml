@@ -41,5 +41,14 @@
             android:background="@drawable/shutter"
             android:clickable="true" />
     </RelativeLayout>
-    <include layout="@layout/setting_menus" />
+    <include android:id="@+id/settings_menu" layout="@layout/setting_menus" />
+    <LinearLayout
+        android:id="@+id/sub_menu_contrainer"
+        android:visibility="invisible"
+        android:layout_above="@id/settings_menu"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/setting_menu_height"
+        android:orientation="horizontal"
+        android:background="@drawable/sub_menu_bg">
+    </LinearLayout>
 </RelativeLayout>

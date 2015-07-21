@@ -1,6 +1,5 @@
 package com.mindarc.screenrecorder.fragment;
 
-import android.app.ActionBar;
 import android.content.Context;
 import android.content.res.Resources;
 import android.database.Cursor;

@@ -18,6 +18,9 @@
     <string name="orien_portrait">竖屏</string>
     <string name="orien_landscape">横屏</string>
 
+    <string name="rotate_on">打开</string>
+    <string name="rotate_off">关闭</string>
+
     <string name="setting_menu_bitrate">比特率</string>
     <string name="setting_menu_resolution">视频尺寸</string>
     <string name="setting_menu_rotate">转屏</string>

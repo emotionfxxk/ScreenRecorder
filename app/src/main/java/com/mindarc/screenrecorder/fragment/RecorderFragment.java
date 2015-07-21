@@ -8,6 +8,7 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.provider.MediaStore;
 import android.support.v4.app.Fragment;
+import android.text.format.Formatter;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -15,6 +16,8 @@ import android.widget.AdapterView;
 import android.widget.CheckedTextView;
 import android.widget.ExpandableListView;
 import android.widget.GridView;
+import android.widget.LinearLayout;
+import android.widget.TextView;
 
 import com.mindarc.screenrecorder.Constants;
 import com.mindarc.screenrecorder.R;
@@ -24,6 +27,9 @@ import com.mindarc.screenrecorder.event.RecorderEvent;
 import com.mindarc.screenrecorder.utils.LogUtil;
 import com.mindarc.screenrecorder.utils.Settings;
 import com.mindarc.screenrecorder.utils.StorageHelper;
+
+import java.util.ArrayList;
+import java.util.List;
 
 import de.greenrobot.event.EventBus;
 import in.srain.cube.views.GridViewWithHeaderAndFooter;
@@ -39,10 +45,13 @@ import in.srain.cube.views.GridViewWithHeaderAndFooter;
  */
 public class RecorderFragment extends Fragment implements View.OnClickListener {
     private final static String MODULE_TAG = "RecorderFragment";
+    private final static int RESERVED_SUB_MENU_ITEM_COUNT = 3;
     private CheckedTextView mShutter;
-    private ExpandableListView mSettings;
-    private SettingAdapter mAdapter;
     private ClipsAdapter mClipsAdapter;
+    private TextView mChosenBitrate, mChosenResolution, mChosenRotate;
+    private LinearLayout mSubMenuContrainer;
+    private List<CheckedTextView> mSubMenuItems;
+    private int mOpenedMenuId = -1;
 
     private GridViewWithHeaderAndFooter mClips;
     @Override
@@ -58,20 +67,25 @@ public class RecorderFragment extends Fragment implements View.OnClickListener {
         View rootView = inflater.inflate(R.layout.recorder_fragment, container, false);
         mShutter = (CheckedTextView) rootView.findViewById(R.id.shutter);
         mShutter.setOnClickListener(this);
-        mSettings = (ExpandableListView) rootView.findViewById(R.id.settings);
-        mAdapter = new SettingAdapter(getActivity());
-        mSettings.setAdapter(mAdapter);
-        mSettings.setOnGroupExpandListener(new ExpandableListView.OnGroupExpandListener() {
-            @Override
-            public void onGroupExpand(int groupPosition) {
-                int groupCount = mAdapter.getGroupCount();
-                for (int i = 0; i < groupCount; ++i) {
-                    if (i != groupPosition) {
-                        mSettings.collapseGroup(i);
-                    }
-                }
-            }
-        });
+
+        rootView.findViewById(R.id.bitrate_menu).setOnClickListener(this);
+        rootView.findViewById(R.id.resolution_menu).setOnClickListener(this);
+        rootView.findViewById(R.id.rotate_menu).setOnClickListener(this);
+
+        mChosenBitrate = (TextView) rootView.findViewById(R.id.bitrate_value);
+        mChosenResolution = (TextView) rootView.findViewById(R.id.resolution_value);
+        mChosenRotate = (TextView) rootView.findViewById(R.id.rotate_value);
+
+        mSubMenuContrainer = (LinearLayout) rootView.findViewById(R.id.sub_menu_contrainer);
+        mSubMenuItems = new ArrayList<CheckedTextView>();
+        for (int index = 0; index < RESERVED_SUB_MENU_ITEM_COUNT; ++index) {
+            CheckedTextView ctv = (CheckedTextView)inflater.inflate(R.layout.sub_menu_items,
+                    mSubMenuContrainer, false);
+            ctv.setId(index);
+            ctv.setOnClickListener(this);
+            mSubMenuItems.add(ctv);
+        }
+
         mClipsAdapter = new ClipsAdapter(getActivity().getApplicationContext(),
                 StorageHelper.sStorageHelper.getVideoClips());
         mClips = (GridViewWithHeaderAndFooter) rootView.findViewById(R.id.clips);
@@ -111,8 +125,14 @@ public class RecorderFragment extends Fragment implements View.OnClickListener {
         mClips.addFooterView(footer);
         mClips.setAdapter(mClipsAdapter);
 
-        mSettings.setOnChildClickListener(mAdapter);
         return rootView;
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        LogUtil.i(MODULE_TAG, "onResume()");
+        updateSettings();
     }
 
     @Override
@@ -131,16 +151,18 @@ public class RecorderFragment extends Fragment implements View.OnClickListener {
 
     @Override
     public void onClick(View v) {
-        boolean isRecording = RecorderModel.getModel().isRecorderRunning();
-        LogUtil.i(MODULE_TAG, "onClick() isRecording=" + isRecording);
-        mShutter.toggle();
-        mShutter.setEnabled(false);
-        if (!isRecording) {
-            start_rec();
-            getActivity().finish();
-            EventBus.getDefault().unregister(this);
-        } else {
-            stop_rec();
+        switch (v.getId()) {
+            case R.id.shutter:
+                onClickShutter();
+                break;
+            case R.id.bitrate_menu:
+            case R.id.resolution_menu:
+            case R.id.rotate_menu:
+                onClickMenuItem(v.getId());
+                break;
+            default:
+                onClickSubMenuItem(v.getId());
+                break;
         }
     }
 
@@ -149,6 +171,14 @@ public class RecorderFragment extends Fragment implements View.OnClickListener {
             ", fileName:" + event.fileName);
         mShutter.setEnabled(true);
         mShutter.setChecked(event.isRecording);
+    }
+
+    private void updateSettings() {
+        final Settings settings = Settings.instance();
+        mChosenBitrate.setText(Formatter.formatShortFileSize(getActivity(), settings.getChoosedBitrate()));
+        mChosenResolution.setText(settings.getChosenRes());
+        mChosenRotate.setText(settings.isRotate() ? getActivity().getString(R.string.rotate_on) :
+                getActivity().getString(R.string.rotate_off));
     }
 
     private void start_rec() {
@@ -173,6 +203,76 @@ public class RecorderFragment extends Fragment implements View.OnClickListener {
         Intent intent = new Intent(getActivity(), RecorderService.class);
         intent.setAction(Constants.Action.STOP_REC);
         getActivity().startService(intent);
+    }
+
+    private void onClickShutter() {
+        boolean isRecording = RecorderModel.getModel().isRecorderRunning();
+        LogUtil.i(MODULE_TAG, "onClick() isRecording=" + isRecording);
+        mShutter.toggle();
+        mShutter.setEnabled(false);
+        if (!isRecording) {
+            start_rec();
+            getActivity().finish();
+            EventBus.getDefault().unregister(this);
+        } else {
+            stop_rec();
+        }
+    }
+
+    private void onClickMenuItem(int menuId) {
+        final Settings settings = Settings.instance();
+        if (mOpenedMenuId == menuId) {
+            mOpenedMenuId = -1;
+            // close menu
+            mSubMenuContrainer.setVisibility(View.INVISIBLE);
+            mSubMenuContrainer.removeAllViews();
+        } else {
+            mOpenedMenuId = menuId;
+            // open menu here
+            ArrayList<String> values = new ArrayList<String>();
+            int chosenIndex = 0;
+            if (menuId == R.id.resolution_menu) {
+                values = settings.getAvailResList();
+                chosenIndex = settings.getChosenResIndex();
+            } else if (menuId == R.id.bitrate_menu) {
+                int[] bitrates = settings.getBitrates();
+                for (int bitrate : bitrates) {
+                    values.add(Formatter.formatShortFileSize(getActivity(), bitrate));
+                }
+                chosenIndex = settings.getChosenBitrateIndex();
+            } else if (menuId == R.id.rotate_menu) {
+                values.add(getActivity().getString(R.string.rotate_on));
+                values.add(getActivity().getString(R.string.rotate_off));
+                chosenIndex = settings.isRotate() ? 0 : 1;
+            }
+            if (values != null) {
+                mSubMenuContrainer.removeAllViews();
+                for (int index = 0; index < values.size(); ++index) {
+                    CheckedTextView ctv = mSubMenuItems.get(index);
+                    ctv.setText(values.get(index));
+                    ctv.setChecked(chosenIndex == index);
+                    mSubMenuContrainer.addView(ctv);
+                }
+                mSubMenuContrainer.setVisibility(View.VISIBLE);
+            }
+        }
+    }
+
+    private void onClickSubMenuItem(int id) {
+        final Settings settings = Settings.instance();
+        if (mOpenedMenuId == R.id.resolution_menu) {
+            settings.setChoosedRes(id);
+        } else if (mOpenedMenuId == R.id.bitrate_menu) {
+            settings.setChoosedBitrate(id);
+        } else if (mOpenedMenuId == R.id.rotate_menu) {
+            settings.setRotate(id == 0);
+        }
+        mOpenedMenuId = -1;
+        // close menu
+        mSubMenuContrainer.setVisibility(View.INVISIBLE);
+        mSubMenuContrainer.removeAllViews();
+
+        updateSettings();
     }
 
 }
