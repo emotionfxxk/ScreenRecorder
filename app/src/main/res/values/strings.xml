@@ -14,4 +14,8 @@
 
     <string name="orien_portrait">Portrait</string>
     <string name="orien_landscape">Landscape</string>
+
+    <string name="setting_menu_bitrate">Bitrate</string>
+    <string name="setting_menu_resolution">Resolution</string>
+    <string name="setting_menu_rotate">Rotate</string>
 </resources>

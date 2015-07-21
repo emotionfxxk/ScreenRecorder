@@ -102,7 +102,7 @@ public class RecorderFragment extends Fragment implements View.OnClickListener {
 
 
         int placeHolderHeight = 2 * res.getDimensionPixelSize(R.dimen.shutter_vertical_padding) +
-                res.getDimensionPixelSize(R.dimen.shutter_size);
+                res.getDimensionPixelSize(R.dimen.shutter_size) + res.getDimensionPixelSize(R.dimen.setting_menu_height);
         View footer = new View(getActivity());
         footer.setLayoutParams(new ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT,
                 placeHolderHeight));

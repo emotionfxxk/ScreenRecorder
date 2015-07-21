@@ -26,12 +26,13 @@
         android:layout_marginLeft="@dimen/grid_horizontal_margin"
         android:layout_marginRight="@dimen/grid_horizontal_margin"/>
     <RelativeLayout
+        android:id="@+id/shutter_group"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_alignParentBottom="true"
         android:paddingTop="@dimen/shutter_vertical_padding"
         android:paddingBottom="@dimen/shutter_vertical_padding"
-        android:background="@drawable/bottom_bar">
+        android:background="@android:color/black">
         <CheckedTextView
             android:id="@+id/shutter"
             android:layout_height="@dimen/shutter_size"
@@ -40,4 +41,5 @@
             android:background="@drawable/shutter"
             android:clickable="true" />
     </RelativeLayout>
+    <include layout="@layout/setting_menus" />
 </RelativeLayout>

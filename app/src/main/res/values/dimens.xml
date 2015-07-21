@@ -6,4 +6,5 @@
     <dimen name="grid_cell_space_margin">3dp</dimen>
     <dimen name="shutter_vertical_padding">8dp</dimen>
     <dimen name="shutter_size">72dp</dimen>
+    <dimen name="setting_menu_height">48dp</dimen>
 </resources>
