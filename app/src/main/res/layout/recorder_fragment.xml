@@ -2,18 +2,6 @@
     android:id="@+id/compress_button_layout"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
-    <ExpandableListView
-        android:visibility="gone"
-        android:id="@+id/settings"
-        android:layout_height="match_parent"
-        android:layout_width="match_parent"
-        android:dividerHeight="0dp"
-        android:paddingLeft="8dp"
-        android:paddingRight="8dp"
-        android:scrollbars="none"
-        android:fadingEdge="none"
-        android:groupIndicator="@null"
-        android:listSelector="@drawable/list_selector" />
     <in.srain.cube.views.GridViewWithHeaderAndFooter
         android:id="@+id/clips"
         android:layout_width="match_parent"
