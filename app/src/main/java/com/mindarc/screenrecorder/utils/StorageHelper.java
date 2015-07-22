@@ -5,12 +5,8 @@ import android.content.ContentResolver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
-import android.database.ContentObserver;
 import android.database.Cursor;
-import android.database.DataSetObserver;
-import android.net.Uri;
 import android.os.Environment;
-import android.os.Handler;
 import android.provider.MediaStore;
 
 import java.io.File;
@@ -49,7 +45,12 @@ public class StorageHelper {
             mAppCtx.registerReceiver(mExternalStorageReceiver, filter);
             mIsInit = true;
 
-            updateVideos();
+            Cursor cursor = queryVideoClips();
+            if (cursor != null) {
+                mCursor = cursor;
+            } else {
+                // TODO:
+            }
         }
     }
 
@@ -68,8 +69,7 @@ public class StorageHelper {
             ctx.unregisterReceiver(mExternalStorageReceiver);
         } catch (Exception e) {
         }
-        if (mCursor != null) {
-            mCursor.unregisterContentObserver(mContentOb);
+        if (mCursor != null && !mCursor.isClosed()) {
             mCursor.close();
             mCursor = null;
         }
@@ -96,49 +96,14 @@ public class StorageHelper {
         return fileName;
     }
 
-    private class VideoCollectionContentOb extends ContentObserver {
-        public VideoCollectionContentOb(Handler handler) {
-            super(handler);
-        }
-
-        @Override
-        public void onChange(boolean selfChange, Uri uri) {
-            // do s.th.
-            // depending on the handler you might be on the UI
-            // thread, so be cautious!
-            LogUtil.i(MODULE_TAG, "VideoCollectionContentOb onChanged(boolean selfChange, Uri uri)");
-        }
-    }
-
-    private VideoCollectionContentOb mContentOb = new VideoCollectionContentOb(null);
-
-    private void updateVideos() {
-        if (mCursor != null) {
-            mCursor.unregisterContentObserver(mContentOb);
-            mCursor.close();
-            mCursor = null;
-        }
+    public Cursor queryVideoClips() {
         ContentResolver cr = mAppCtx.getContentResolver();
         String selection = MediaStore.Video.Media.DATA + " like?";
         String[] selectionArgs = new String[]{ "%" + FOLDER_NAME + "%" };
         String[] parameters = { MediaStore.Video.Media._ID, MediaStore.Video.Media.DISPLAY_NAME};
-        mCursor = cr.query(MediaStore.Video.Media.EXTERNAL_CONTENT_URI,
+        return cr.query(MediaStore.Video.Media.EXTERNAL_CONTENT_URI,
                 parameters, selection, selectionArgs, MediaStore.Video.Media.DATE_TAKEN + " DESC");
-        if (mCursor != null) {
-            LogUtil.i(MODULE_TAG, "mCursor.getCount():" + mCursor.getCount());
-            int columnIndex = mCursor.getColumnIndex(MediaStore.Video.Media._ID);
-            int columnNameIndex = mCursor.getColumnIndex(MediaStore.Video.Media.DISPLAY_NAME);
-            if (mCursor.moveToFirst()) {
-                do {
-                    long id = mCursor.getLong(columnIndex);
-                    String name = mCursor.getString(columnNameIndex);
-                    LogUtil.i(MODULE_TAG, "id:" + id + ", name:" + name);
-                } while (mCursor.moveToNext());
-            }
-            mCursor.registerContentObserver(mContentOb);
-        }
     }
-
 
     private synchronized void updateStorageState() {
         String state = Environment.getExternalStorageState();

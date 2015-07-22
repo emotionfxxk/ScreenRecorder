@@ -4,6 +4,8 @@ import android.content.Context;
 import android.content.res.Resources;
 import android.database.Cursor;
 import android.graphics.Point;
+import android.os.*;
+import android.os.Process;
 import android.provider.MediaStore;
 import android.view.Display;
 import android.view.LayoutInflater;
@@ -17,6 +19,7 @@ import android.widget.TextView;
 import com.mindarc.screenrecorder.R;
 import com.mindarc.screenrecorder.utils.ImageLoader;
 import com.mindarc.screenrecorder.utils.LogUtil;
+import com.mindarc.screenrecorder.utils.StorageHelper;
 
 /**
  * Created by sean on 7/20/15.
@@ -73,5 +76,27 @@ public class ClipsAdapter extends CursorAdapter {
             ImageLoader.getGlobleImageLoader().loadBitmap(id, vh.mThumbnail);
             vh.mName.setText(name);
         }
+    }
+
+    @Override
+    protected void onContentChanged() {
+        LogUtil.i(TAG, "onContentChanged()");
+        new Thread() {
+            @Override
+            public void run() {
+                Process.setThreadPriority(Process.THREAD_PRIORITY_BACKGROUND);
+                final Cursor cursor = StorageHelper.sStorageHelper.queryVideoClips();
+                Handler handler = new Handler(Looper.getMainLooper());
+                handler.post(new Runnable() {
+                    @Override
+                    public void run() {
+                        Cursor oldCursor = swapCursor(cursor);
+                        if (oldCursor != null && !oldCursor.isClosed()) {
+                            oldCursor.close();
+                        }
+                    }
+                });
+            }
+        }.start();
     }
 }
