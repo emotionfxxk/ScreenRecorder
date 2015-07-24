@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">AppRecorder</string>
+    <string name="app_name">CamScreen</string>
     <string name="action_settings">Settings</string>
 
     <string name="notification_action_stop">Touch to stop</string>

@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="app_name">应用相机</string>
+    <string name="app_name">屏幕相机</string>
     <string name="action_settings">设置</string>
 
     <string name="notification_action_stop">停止录制</string>
