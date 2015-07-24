@@ -49,7 +49,7 @@ public class RecorderActivity extends ActionBarActivity {
             getSupportActionBar().setDisplayOptions(ActionBar.DISPLAY_SHOW_HOME |
                     ActionBar.DISPLAY_SHOW_TITLE | ActionBar.DISPLAY_USE_LOGO);
             //getSupportActionBar().
-            getSupportActionBar().setLogo(R.drawable.ic_logo);
+            getSupportActionBar().setLogo(R.drawable.ic_launcher);
             getSupportActionBar().setBackgroundDrawable(
                     new ColorDrawable(getResources().getColor(R.color.color_main)));
         }
