@@ -10,6 +10,8 @@ import android.support.v7.app.ActionBarActivity;
 import android.view.Menu;
 import android.view.MenuItem;
 
+import com.google.android.gms.analytics.GoogleAnalytics;
+import com.google.android.gms.analytics.Tracker;
 import com.mindarc.screenrecorder.event.InitEvent;
 import com.mindarc.screenrecorder.fragment.ErrorFragment;
 import com.mindarc.screenrecorder.fragment.InitFragment;
@@ -23,6 +25,7 @@ import de.greenrobot.event.EventBus;
 
 public class RecorderActivity extends ActionBarActivity {
     private final static String MODULE_NAME = "RecorderActivity";
+    protected Tracker mAppTracker;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -40,6 +43,19 @@ public class RecorderActivity extends ActionBarActivity {
         } else {
             showRecorderFragment();
         }
+        mAppTracker = ((RecorderApplication) getApplication()).getTracker(RecorderApplication.TrackerName.APP_TRACKER);
+    }
+
+    @Override
+    public void onStart() {
+        super.onStart();
+        GoogleAnalytics.getInstance(this).reportActivityStart(this);
+    }
+
+    @Override
+    public void onStop() {
+        super.onStop();
+        GoogleAnalytics.getInstance(this).reportActivityStop(this);
     }
 
     @Override

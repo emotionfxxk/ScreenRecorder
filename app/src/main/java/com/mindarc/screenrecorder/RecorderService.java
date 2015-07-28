@@ -8,6 +8,7 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.os.IBinder;
 
+import com.mindarc.screenrecorder.utils.EventManager;
 import com.mindarc.screenrecorder.utils.Settings;
 import com.mindarc.screenrecorder.core.ShellScreenRecorder;
 import com.mindarc.screenrecorder.utils.LogUtil;
@@ -114,9 +115,11 @@ public class RecorderService extends Service implements ShellScreenRecorder.Stat
 
                 // setup notification
                 setupNotification();
+                EventManager.sendStartEvent(this);
             } else if (action.equals(Constants.Action.STOP_REC)) {
                 ShellScreenRecorder.stop();
                 stopForeground(true);
+                EventManager.sendStopEvent(this);
             }
         }
 
