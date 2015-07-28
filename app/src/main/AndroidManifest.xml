@@ -3,6 +3,11 @@
     package="com.mindarc.screenrecorder" >
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
+    <!-- Mandatory permission -->
+    <uses-permission android:name="android.permission.INTERNET" />
+    <!-- Highly recommended permission to get more ads and revenue -->
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
+
     <application
         android:name=".RecorderApplication"
         android:allowBackup="true"
@@ -22,6 +27,8 @@
             </intent-filter>
         </activity>
         <service android:name=".RecorderService" android:exported="false" />
+        <activity android:name="com.purplebrain.adbuddiz.sdk.AdBuddizActivity"
+            android:theme="@android:style/Theme.Translucent" />
     </application>
 
 </manifest>

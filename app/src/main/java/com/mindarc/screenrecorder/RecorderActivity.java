@@ -19,6 +19,7 @@ import com.mindarc.screenrecorder.fragment.RecorderFragment;
 import com.mindarc.screenrecorder.utils.LogUtil;
 import com.mindarc.screenrecorder.utils.Settings;
 import com.mindarc.screenrecorder.utils.StorageHelper;
+import com.purplebrain.adbuddiz.sdk.AdBuddiz;
 
 import de.greenrobot.event.EventBus;
 
@@ -44,6 +45,9 @@ public class RecorderActivity extends ActionBarActivity {
             showRecorderFragment();
         }
         mAppTracker = ((RecorderApplication) getApplication()).getTracker(RecorderApplication.TrackerName.APP_TRACKER);
+        AdBuddiz.setPublisherKey("279872c2-4c68-453c-96bd-93bb89fd3e5d");
+        AdBuddiz.cacheAds(this); // this = current Activity
+
     }
 
     @Override
@@ -106,6 +110,7 @@ public class RecorderActivity extends ActionBarActivity {
         //event = new InitEvent(Constants.ErrorId.NOT_ROOTED);
         if (event.error_id == Constants.ErrorId.NO_ERROR) {
             showRecorderFragment();
+            AdBuddiz.showAd(this);
         } else {
             showErrorFragment(event.error_id);
             hideRecorderFragment();
