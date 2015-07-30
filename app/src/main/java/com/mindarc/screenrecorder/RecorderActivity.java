@@ -52,6 +52,7 @@ public class RecorderActivity extends ActionBarActivity {
         mAppTracker = ((RecorderApplication) getApplication()).getTracker(RecorderApplication.TrackerName.APP_TRACKER);
 
         AdSettings.setKey(new String[]{"baidu", "中 国 "});
+        AdSettings.setHob(new String[]{"应用", "游戏", "手机"});
         adView = new AdView(this);
         adView.setListener(new AdViewListener() {
             @Override

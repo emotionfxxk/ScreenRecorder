@@ -191,8 +191,8 @@ public class RecorderFragment extends Fragment implements View.OnClickListener {
         intent.putExtra(Constants.Key.TIME_LIMIT, 24 * 60 * 60);
         String res = Settings.instance().getChosenRes();
         String[] values = res.split("x");
-        intent.putExtra(Constants.Key.WIDTH, values[0]);
-        intent.putExtra(Constants.Key.HEIGHT, values[1]);
+        intent.putExtra(Constants.Key.WIDTH, Integer.valueOf(values[0]));
+        intent.putExtra(Constants.Key.HEIGHT, Integer.valueOf(values[1]));
         intent.putExtra(Constants.Key.BITRATE, Settings.instance().getChoosedBitrate());
         intent.putExtra(Constants.Key.ROTATE, Settings.instance().isRotate());
         getActivity().startService(intent);
